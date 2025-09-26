@@ -43,6 +43,13 @@ public class Main {
 			iso.seek(497837637);
 			iso.write(14); //fix Goku costume offset to point to Costume 2 rather than invalid float
 			System.out.println("SUCCESS: Dragon History is patched!");
+			//Great Ape detransformation patch
+			int[] addrs = {614007579,614529563,615053467,615527195,616000283,616545947,617070747,617544475};
+			for (int i=0; i<8; i++) {
+				iso.seek(addrs[i]);
+				iso.write(0xFF); //disable detransformation
+			}
+			System.out.println("SUCCESS: Great Ape is patched!");
 		} 
 		if (patchBools[1]) {
 			patchCnt++;
@@ -102,8 +109,9 @@ public class Main {
 		try {
 			String[] patchArgs = {"-fix-crash","-fix-typos","-fix-vegeta","-fix-all"};
 			String[] patchDesc = {
-				"Fixes Dragon History crash (which prevented \"The World's Strongest\" from being completed) "
-				+ "and Sim Dragon crash (which would occur shortly after selecting a character).",
+				"Fixes Dragon History crash (which prevented \"The World's Strongest\" from being completed),"
+				+ "\nSim Dragon crash (which would occur shortly after selecting a character),"
+				+ "\nand Great Ape detransformation crash (by disabling it for all costumes).",
 				"Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences).",
 				"Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13.",
 				"Applies all the patches listed above."
