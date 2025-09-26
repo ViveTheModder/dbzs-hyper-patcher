@@ -97,7 +97,7 @@ public class App {
 			patchBox.setBackground(new Color(201, 136, 211));
 			patchBox.setOpaque(true);
 			patchBox.setFont(tahoma);
-			patchBox.setToolTipText(patchDesc[0]);
+			patchBox.setToolTipText("<html>"+patchDesc[0].replaceAll("\n", "<br>")+"</html>");
 			((JLabel)patchBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
 			patchLabel.setForeground(Color.WHITE);
 			patchLabel.setFont(tahomaBold);
@@ -119,7 +119,7 @@ public class App {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int index = patchBox.getSelectedIndex();
-					patchBox.setToolTipText(patchDesc[index]);
+					patchBox.setToolTipText("<html>"+patchDesc[index].replaceAll("\n", "<br>")+"</html>");
 				}
 			});
 			//give button its action listener
