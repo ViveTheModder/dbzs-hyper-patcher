@@ -1,4 +1,5 @@
 package cmd;
+import java.io.DataInputStream;
 //DBZ Sparking! HYPER Patcher by ViveTheJoestar
 import java.io.File;
 import java.io.IOException;
@@ -23,19 +24,21 @@ public class Main {
 	public static void applyPatch(RandomAccessFile iso, String patchArg) throws IOException {
 		int patchCnt = 0;
 		boolean[] patchBools = {
-			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), patchArg.equals("-fix-vegeta")
+			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
+			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon")
 		};
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
-			for (int i=0; i<3; i++) patchBools[i] = true;
+			for (int i=0; i<4; i++) patchBools[i] = true;
 		}
 		if (patchBools[0]) {
 			patchCnt++;
 			//Sim Dragon patch
 			iso.seek(491374592);
 			byte[] pakBytes = new byte[3488160];
-			InputStream pakStream = Main.class.getResourceAsStream("/patch/Sim_Dragon_US.cpak");
-			pakStream.read(pakBytes);
+			InputStream stream = Main.class.getResourceAsStream("/patch/Sim_Dragon_US.cpak");
+			DataInputStream pakStream = new DataInputStream(stream);
+			pakStream.readFully(pakBytes);
 			pakStream.close();
 			iso.write(pakBytes);
 			System.out.println("SUCCESS: Sim Dragon is patched!");
@@ -58,13 +61,13 @@ public class Main {
 			String[] pakNames = {"DragonHistory_7_US.cpak","DragonHistory_8_US.cpak"};
 			for (int i=0; i<2; i++) {
 				byte[] pakBytes = new byte[pakSizes[i]];
-				InputStream pakStream = Main.class.getResourceAsStream("/patch/"+pakNames[i]);
-				pakStream.read(pakBytes);
+				InputStream stream = Main.class.getResourceAsStream("/patch/"+pakNames[i]);
+				DataInputStream pakStream = new DataInputStream(stream);
+				pakStream.readFully(pakBytes);
 				pakStream.close();
 				iso.seek(pakPos[i]);
 				iso.write(pakBytes);
 			}
-			//TODO: fix more Dragon History typos (from PAKs this time)
 			int lineCnt=0;
 			int[] txtPakIds = new int[29], txtPakPos = new int[29], txtPakSizes = new int[29];
 			InputStream csvStream = Main.class.getResourceAsStream("/patch/txt-us-b-info.csv");
@@ -82,8 +85,9 @@ public class Main {
 				byte[] pakBytes = new byte[txtPakSizes[i]];
 				String start = "TXT-US-B-";
 				if (txtPakIds[i]<10) start+="0";
-				InputStream pakStream = Main.class.getResourceAsStream("/patch/"+start+txtPakIds[i]+".pak");
-				pakStream.read(pakBytes);
+				InputStream stream = Main.class.getResourceAsStream("/patch/"+start+txtPakIds[i]+".pak");
+				DataInputStream pakStream = new DataInputStream(stream);
+				pakStream.readFully(pakBytes);
 				pakStream.close();
 				iso.seek(txtPakPos[i]);
 				iso.write(pakBytes);
@@ -101,19 +105,31 @@ public class Main {
 			}
 			System.out.println("SUCCESS: Super Saiyan 2 Vegeta is patched!");
 		}
+		if (patchBools[3]) {
+			patchCnt++;
+			//addresses to Pikkon's PAKs' halo model part IDs (0x71 is changed to 0x6F)
+			int[] addrs = {854976010,856180234};
+			for (int i=0; i<2; i++) {
+				iso.seek(addrs[i]);
+				iso.write(0x6F);
+			}
+			System.out.println("SUCCESS: Pikkon is patched!");
+		}
 		//only close RAF (write changes to ISO) if at least one patch argument is valid
 		if (patchCnt>0) iso.close();
 		else System.out.println("ERROR: Invalid patch argument provided.");
 	}
 	public static void main(String[] args) {
 		try {
-			String[] patchArgs = {"-fix-crash","-fix-typos","-fix-vegeta","-fix-all"};
+			String version = "v1.2";
+			String[] patchArgs = {"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon","-fix-all"};
 			String[] patchDesc = {
 				"Fixes Dragon History crash (which prevented \"The World's Strongest\" from being completed),"
 				+ "\nSim Dragon crash (which would occur shortly after selecting a character),"
 				+ "\nand Great Ape detransformation crash (by disabling it for all costumes).",
 				"Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences).",
 				"Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13.",
+				"Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume.",
 				"Applies all the patches listed above."
 			};
 			if (args.length>1) {
@@ -130,13 +146,13 @@ public class Main {
 				}
 			} else if (args.length>0) {
 				if (args[0].equals("-h")) {
-					System.out.println("=== DBZ Sparking! HYPER Patcher ===");
+					System.out.println("=== DBZ Sparking! HYPER Patcher "+version+" ===");
 					System.out.println("Usage: java -jar dbzs-hyper-patcher.jar \"path/to/ISO\" [patch-arg]");
 					System.out.println("--- Patch Arguments ---");
 					for (int i=0; i<patchArgs.length; i++)
 						System.out.println(patchArgs[i]+": "+patchDesc[i]);
 				}
-			} else App.setApp(patchArgs,patchDesc);
+			} else App.setApp(patchArgs,patchDesc,version);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

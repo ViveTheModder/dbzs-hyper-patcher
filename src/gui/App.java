@@ -52,18 +52,18 @@ public class App {
 		}
 		return iso;
 	}
-	private static void errorBeep(Toolkit defToolkit)
-	{
+	private static void errorBeep(Toolkit defToolkit) {
 		Runnable runWinErrorSnd = (Runnable) defToolkit.getDesktopProperty("win.sound.exclamation");
 		if (runWinErrorSnd!=null) runWinErrorSnd.run();
 	}
-	public static void setApp(String[] patchArgs, String[] patchDesc) {
+	public static void setApp(String[] patchArgs, String[] patchDesc, String version) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			String[] patchTypes = {
-				"Fix Game Crashes", "Fix Story Mode Typos", "Fix Vegeta Victory Quote", "Fix All"
+				"Fix Game Crashes", "Fix Story Mode Typos", "Fix Vegeta Victory Quote",
+				"Fix Pikkon Permanent Halo", "Fix All"
 			};
-			String title = "DBZ Sparking! HYPER Patcher";
+			String title = "DBZ Sparking! HYPER Patcher "+version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
 			//initialize components
 			Color bgColor = new Color(109, 103, 202);
@@ -109,8 +109,8 @@ public class App {
 			patch.setBorderPainted(true);
 			patch.setForeground(Color.WHITE);
 			patch.setFont(tahomaBold);
-			patch.setToolTipText("<html>Patch Types have been ordered from most to least important, but "
-			+ "please<br> apply all of them at once, to an untouched DBZ Sparking! HYPER copy.</html>");
+			patch.setToolTipText("<html>Patch Types are ordered from most to least important, but please<br>"
+			+ "apply all of them at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
 			//properly display background color on Windows 10 or higher
 			patch.setContentAreaFilled(false);
 			patch.setOpaque(true);
