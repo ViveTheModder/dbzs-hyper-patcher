@@ -23,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import cmd.Main;
@@ -61,7 +60,7 @@ public class App {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			String[] patchTypes = {
 				"Fix Game Crashes", "Fix Story Mode Typos", "Fix Vegeta Victory Quote",
-				"Fix Pikkon Permanent Halo", "Fix All"
+				"Fix Pikkon Permanent Halo", "Fix Kaio-ken Goku Face", "Fix All"
 			};
 			String title = "DBZ Sparking! HYPER Patcher "+version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
@@ -94,8 +93,6 @@ public class App {
 			//set component properties
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			iconLabel.setIcon(icon);
-			patchBox.setBackground(new Color(201, 136, 211));
-			patchBox.setOpaque(true);
 			patchBox.setFont(tahoma);
 			patchBox.setToolTipText("<html>"+patchDesc[0].replaceAll("\n", "<br>")+"</html>");
 			((JLabel)patchBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
@@ -109,8 +106,8 @@ public class App {
 			patch.setBorderPainted(true);
 			patch.setForeground(Color.WHITE);
 			patch.setFont(tahomaBold);
-			patch.setToolTipText("<html>Patch Types are ordered from most to least important, but please<br>"
-			+ "apply all of them at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
+			patch.setToolTipText("<html>Patch Types are ordered from most to least important, but please make sure<br>"
+			+ "to apply all of them at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
 			//properly display background color on Windows 10 or higher
 			patch.setContentAreaFilled(false);
 			patch.setOpaque(true);
@@ -158,8 +155,7 @@ public class App {
 			frame.setSize(768, 512);
 			frame.setTitle(title);
 			frame.setVisible(true);
-		} catch (ClassNotFoundException | InstantiationException 
-			| IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

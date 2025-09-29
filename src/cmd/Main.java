@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import gui.App;
@@ -25,11 +26,12 @@ public class Main {
 		int patchCnt = 0;
 		boolean[] patchBools = {
 			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
-			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon")
+			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon"),
+			patchArg.equals("-fix-goku")
 		};
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
-			for (int i=0; i<4; i++) patchBools[i] = true;
+			for (int i=0; i<patchBools.length; i++) patchBools[i] = true;
 		}
 		if (patchBools[0]) {
 			patchCnt++;
@@ -115,14 +117,36 @@ public class Main {
 			}
 			System.out.println("SUCCESS: Pikkon is patched!");
 		}
+		if (patchBools[4]) {
+			patchCnt++;
+			byte[] texId = new byte[6],
+			faceTexId = {-112,-127,64,-35,101,1}, mouthTexId = {-80,1,64,85,-123,1},
+			oldFaceTexId = {-120,-127,64,-35,69,1}, oldMouthTexId = {-88,1,64,85,101,1};
+			int selStart = 546988300, selEnd = 547120672;
+			for (int pos=selStart; pos<selEnd; pos+=2) {
+				iso.seek(pos);
+				iso.read(texId);
+				//overwrite old face texture ID with the valid ID
+				if (Arrays.equals(texId, oldFaceTexId)) {
+					iso.seek(pos);
+					iso.write(faceTexId);
+				}
+				//overwrite old mouth texture ID with the valid ID
+				if (Arrays.equals(texId, oldMouthTexId)) {
+					iso.seek(pos);
+					iso.write(mouthTexId);
+				}
+			}
+			System.out.println("SUCCESS: Kaio-ken Goku is patched!");
+		}
 		//only close RAF (write changes to ISO) if at least one patch argument is valid
 		if (patchCnt>0) iso.close();
 		else System.out.println("ERROR: Invalid patch argument provided.");
 	}
 	public static void main(String[] args) {
 		try {
-			String version = "v1.2";
-			String[] patchArgs = {"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon","-fix-all"};
+			String version = "v1.3";
+			String[] patchArgs = {"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon","-fix-goku","-fix-all"};
 			String[] patchDesc = {
 				"Fixes Dragon History crash (which prevented \"The World's Strongest\" from being completed),"
 				+ "\nSim Dragon crash (which would occur shortly after selecting a character),"
@@ -130,6 +154,7 @@ public class Main {
 				"Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences).",
 				"Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13.",
 				"Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume.",
+				"Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture.",
 				"Applies all the patches listed above."
 			};
 			if (args.length>1) {
