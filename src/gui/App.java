@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -60,7 +61,7 @@ public class App {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			String[] patchTypes = {
 				"Fix Game Crashes", "Fix Story Mode Typos", "Fix Vegeta Victory Quote",
-				"Fix Pikkon Permanent Halo", "Fix Kaio-ken Goku Face", "Fix All"
+				"Fix Pikkon Permanent Halo", "Fix Kaio-ken Goku Face", "Fix JP Buutenks Special Attack SFX", "Fix All"
 			};
 			String title = "DBZ Sparking! HYPER Patcher "+version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
@@ -106,8 +107,8 @@ public class App {
 			patch.setBorderPainted(true);
 			patch.setForeground(Color.WHITE);
 			patch.setFont(tahomaBold);
-			patch.setToolTipText("<html>Patch Types are ordered from most to least important, but please make sure<br>"
-			+ "to apply all of them at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
+			patch.setToolTipText("<html>Patch Types are chronologically ordered, but please make sure to apply all of them<br>"
+			+ "at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
 			//properly display background color on Windows 10 or higher
 			patch.setContentAreaFilled(false);
 			patch.setOpaque(true);
@@ -155,6 +156,10 @@ public class App {
 			frame.setSize(768, 512);
 			frame.setTitle(title);
 			frame.setVisible(true);
+		} catch (HeadlessException e) {
+			String os = System.getProperty("os.name");
+			System.out.println("ERROR: This OS ("+os+") does not support the Swing library.\n"
+			+ "Run the program from the command line instead. Use -h for help.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

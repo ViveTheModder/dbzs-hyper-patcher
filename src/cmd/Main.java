@@ -27,7 +27,7 @@ public class Main {
 		boolean[] patchBools = {
 			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
 			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon"),
-			patchArg.equals("-fix-goku")
+			patchArg.equals("-fix-goku"), patchArg.equals("-fix-buutenks")
 		};
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
@@ -36,13 +36,7 @@ public class Main {
 		if (patchBools[0]) {
 			patchCnt++;
 			//Sim Dragon patch
-			iso.seek(491374592);
-			byte[] pakBytes = new byte[3488160];
-			InputStream stream = Main.class.getResourceAsStream("/patch/Sim_Dragon_US.cpak");
-			DataInputStream pakStream = new DataInputStream(stream);
-			pakStream.readFully(pakBytes);
-			pakStream.close();
-			iso.write(pakBytes);
+			writePatchFile(iso, 491374592, 3488160, "Sim_Dragon_US.cpak");
 			System.out.println("SUCCESS: Sim Dragon is patched!");
 			//Dragon History patch
 			iso.seek(497837637);
@@ -61,15 +55,7 @@ public class Main {
 			int[] pakPos = {489539584,489949184}, pakSizes = {408560,579040};
 			//7 -> Dragon Ball Saga, 8 -> What-If Saga
 			String[] pakNames = {"DragonHistory_7_US.cpak","DragonHistory_8_US.cpak"};
-			for (int i=0; i<2; i++) {
-				byte[] pakBytes = new byte[pakSizes[i]];
-				InputStream stream = Main.class.getResourceAsStream("/patch/"+pakNames[i]);
-				DataInputStream pakStream = new DataInputStream(stream);
-				pakStream.readFully(pakBytes);
-				pakStream.close();
-				iso.seek(pakPos[i]);
-				iso.write(pakBytes);
-			}
+			for (int i=0; i<2; i++) writePatchFile(iso, pakPos[i], pakSizes[i], pakNames[i]);
 			int lineCnt=0;
 			int[] txtPakIds = new int[29], txtPakPos = new int[29], txtPakSizes = new int[29];
 			InputStream csvStream = Main.class.getResourceAsStream("/patch/txt-us-b-info.csv");
@@ -84,15 +70,9 @@ public class Main {
 			}
 			sc.close();
 			for (int i=0; i<txtPakPos.length; i++) {
-				byte[] pakBytes = new byte[txtPakSizes[i]];
 				String start = "TXT-US-B-";
 				if (txtPakIds[i]<10) start+="0";
-				InputStream stream = Main.class.getResourceAsStream("/patch/"+start+txtPakIds[i]+".pak");
-				DataInputStream pakStream = new DataInputStream(stream);
-				pakStream.readFully(pakBytes);
-				pakStream.close();
-				iso.seek(txtPakPos[i]);
-				iso.write(pakBytes);
+				writePatchFile(iso, txtPakPos[i], txtPakSizes[i], start+txtPakIds[i]+".pak");
 			}
 			System.out.println("SUCCESS: Dragon History typos are patched!");
 		}
@@ -139,14 +119,30 @@ public class Main {
 			}
 			System.out.println("SUCCESS: Kaio-ken Goku is patched!");
 		}
+		if (patchBools[5]) {
+			patchCnt++;
+			writePatchFile(iso, 1293348864, 338624, "Buu_A_Voice_JP.pak");
+			System.out.println("SUCCESS: Super Buu - Gotenks Absorbed is patched!");
+		}
 		//only close RAF (write changes to ISO) if at least one patch argument is valid
 		if (patchCnt>0) iso.close();
 		else System.out.println("ERROR: Invalid patch argument provided.");
 	}
+	public static void writePatchFile(RandomAccessFile iso, int pos, int fileSize, String fileName) throws IOException {
+		byte[] pakBytes = new byte[fileSize];
+		InputStream stream = Main.class.getResourceAsStream("/patch/"+fileName);
+		DataInputStream pakStream = new DataInputStream(stream);
+		pakStream.readFully(pakBytes);
+		pakStream.close();
+		iso.seek(pos);
+		iso.write(pakBytes);
+	}
 	public static void main(String[] args) {
 		try {
-			String version = "v1.3";
-			String[] patchArgs = {"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon","-fix-goku","-fix-all"};
+			String version = "v1.4";
+			String[] patchArgs = {
+				"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon","-fix-goku","-fix-buutenks","-fix-all"
+			};
 			String[] patchDesc = {
 				"Fixes Dragon History crash (which prevented \"The World's Strongest\" from being completed),"
 				+ "\nSim Dragon crash (which would occur shortly after selecting a character),"
@@ -155,6 +151,8 @@ public class Main {
 				"Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13.",
 				"Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume.",
 				"Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture.",
+				"Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign"
+				+ "\nand Super Buu Kamikaze Attack when Japanese voices are selected.",
 				"Applies all the patches listed above."
 			};
 			if (args.length>1) {

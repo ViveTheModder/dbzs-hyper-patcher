@@ -1,5 +1,5 @@
 # dbzs-hyper-patcher
-A patcher for DBZ Sparking! HYPER that fixes a **couple of its crashes** and some **typos**. Comes with both a **command-line** and **GUI** version. 
+A patcher for DBZ Sparking! HYPER that fixes a variety of issues: **crashes, typos, audio, visuals**. Comes with both a **command-line** and **GUI** version. 
 
 Either way, it will only work as intended on an **untouched copy of DBZ Sparking! HYPER**, which can be found on [its website](https://dbzs-hyper.nekoweb.org/).
 
@@ -11,7 +11,7 @@ Either way, it will only work as intended on an **untouched copy of DBZ Sparking
 2. Type the following, then press Enter: ``java -jar dbzs-hyper-patcher.jar -h``.
 <img width="1126" height="762" alt="image" src="https://github.com/user-attachments/assets/7fd70c8b-572e-4100-8308-138787b5888d" />
 
-3. Following the example below, specify the path to the ISO, as well as the patch type. Patch types are ordered from most to least important, but ``-fix-all`` is strongly encouraged.
+3. Following the example below, specify the path to the ISO, as well as the patch type. Patch types are ordered chronologically, but ``-fix-all`` is strongly encouraged.
 <img width="1126" height="762" alt="image" src="https://github.com/user-attachments/assets/346c0714-584f-4081-a5a8-9b8c2654f8f3" />
 
 ## GUI
