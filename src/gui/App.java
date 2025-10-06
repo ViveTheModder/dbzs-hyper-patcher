@@ -1,6 +1,7 @@
 package gui;
 //DBZ Sparking! HYPER Patcher by ViveTheJoestar
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -12,24 +13,33 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import cmd.Main;
 
 public class App {
-	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, String title, Toolkit defToolkit) throws IOException {
+	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, String title, Toolkit tk) throws IOException {
 		RandomAccessFile iso = null;
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("CD image (*.ISO)", "iso");
 		chooser.addChoosableFileFilter(filter);
@@ -43,7 +53,7 @@ public class App {
 				iso = new RandomAccessFile(chooser.getSelectedFile(), "rw");
 				if (!Main.isHyperIso(iso)) {
 					iso = null;
-					errorBeep(defToolkit);
+					errorBeep(tk);
 					JOptionPane.showMessageDialog(chooser, "Invalid DBZ Sparking! HYPER ISO "
 					+ "(does not match original copy).", title, JOptionPane.ERROR_MESSAGE);
 				}
@@ -61,7 +71,8 @@ public class App {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			String[] patchTypes = {
 				"Fix Game Crashes", "Fix Story Mode Typos", "Fix Vegeta Victory Quote",
-				"Fix Pikkon Permanent Halo", "Fix Kaio-ken Goku Face", "Fix JP Buutenks Special Attack SFX", "Fix All"
+				"Fix Pikkon Permanent Halo", "Fix Kaio-ken Goku Face", "Fix JP Buutenks Special Attack SFX", 
+				"Fix Krillin Spirit Bomb" ,"Fix All"
 			};
 			String title = "DBZ Sparking! HYPER Patcher "+version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
@@ -78,6 +89,8 @@ public class App {
 			JFrame frame = new JFrame();
 			JFileChooser chooser = new JFileChooser();
 			JLabel iconLabel = new JLabel(""), patchLabel = new JLabel("Patch Type");
+			JMenu greets = new JMenu("Greetings"), update = new JMenu("Update");
+			JMenuBar menuBar = new JMenuBar();
 			JPanel panel = new JPanel(new GridBagLayout()) {
 			    @Override //set gradient background
 			    protected void paintComponent(Graphics g) {
@@ -91,6 +104,78 @@ public class App {
 			    	g2.dispose();
 			    }
 			};
+			//give menus their own listeners
+			greets.addMenuListener(new MenuListener() {
+				@Override
+				public void menuSelected(MenuEvent e) {
+					String[] users = {"Bεzzo", "Kyo MODS", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin"};
+					String[] links = {
+						"https://bsky.app/profile/did:plc:4hh7ubpzmyq5raktz5sxc6ig",
+						"https://www.youtube.com/@kyokomodsbt3","https://www.youtube.com/@valen2006",
+						"https://www.youtube.com/@VSVIDEOSOFC","https://www.youtube.com/@XenoCarmesin"
+					};
+					String[] desc = {
+						"providing the Sim Dragon crash fix",
+						"playtesting and pointing out Krillin's Spirit Bomb damage","pointing out the Pikkon halo bug",
+						"pointing out the Kaio-ken Goku face bug", "pointing out overlooked Dragon History typos"
+					};
+					Box mainBox = Box.createVerticalBox();
+					Box[] userBoxes = new Box[users.length];
+					for (int i=0; i<users.length; i++) {
+						final int index = i;
+						JLabel userLabel = new JLabel(users[i]);
+						JLabel descLabel = new JLabel(" for " + desc[i]);
+						descLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+						userLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+						userLabel.setForeground(new Color(0x74,0x31,0xdd));
+						userLabel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								try {
+									Desktop.getDesktop().browse(new URI(links[index]));
+								} catch (URISyntaxException e1) {
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									errorBeep(defToolkit);
+									String msg = "Link could not be opened. Check your Internet connection!";
+									JOptionPane.showMessageDialog(null, msg, title, JOptionPane.WARNING_MESSAGE);
+								}
+							}
+						});
+						userBoxes[i] = Box.createHorizontalBox();
+						userBoxes[i].add(userLabel);
+						userBoxes[i].add(descLabel);
+						mainBox.add(userBoxes[i]);
+					}
+					ImageIcon iconSmall = new ImageIcon(img.getScaledInstance(256, 128, Image.SCALE_SMOOTH));
+					JOptionPane.showMessageDialog(null, mainBox, title, JOptionPane.INFORMATION_MESSAGE, iconSmall);
+				}
+				@Override
+				public void menuDeselected(MenuEvent e) {}
+				@Override
+				public void menuCanceled(MenuEvent e) {}
+			});
+			update.addMenuListener(new MenuListener() {
+				@Override
+				public void menuSelected(MenuEvent e) {
+					String link = "https://github.com/ViveTheModder/dbzs-hyper-patcher/releases";
+					try {
+						Desktop.getDesktop().browse(new URI(link));
+						frame.dispose();
+					} catch (IOException e1) {
+						errorBeep(defToolkit);
+						String msg = "Tool could not be updated. Check your Internet connection!";
+						JOptionPane.showMessageDialog(null, msg, title, JOptionPane.WARNING_MESSAGE);
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				@Override
+				public void menuDeselected(MenuEvent e) {}
+				@Override
+				public void menuCanceled(MenuEvent e) {}
+			});
 			//set component properties
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			iconLabel.setIcon(icon);
@@ -107,8 +192,8 @@ public class App {
 			patch.setBorderPainted(true);
 			patch.setForeground(Color.WHITE);
 			patch.setFont(tahomaBold);
-			patch.setToolTipText("<html>Patch Types are chronologically ordered, but please make sure to apply all of them<br>"
-			+ "at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
+			patch.setToolTipText("<html>Patch Types are chronologically ordered, but please make sure "
+			+ "to apply all of them<br>at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
 			//properly display background color on Windows 10 or higher
 			patch.setContentAreaFilled(false);
 			patch.setOpaque(true);
@@ -141,6 +226,8 @@ public class App {
 				}
 			});
 			//add components
+			menuBar.add(greets);
+			menuBar.add(update);
 			panel.add(iconLabel,gbc);
 			panel.add(patchLabel,gbc);
 			panel.add(new JLabel(" "),gbc);
@@ -153,6 +240,7 @@ public class App {
 			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			frame.setIconImage(img);
 			frame.setLocationRelativeTo(null);
+			frame.setJMenuBar(menuBar);
 			frame.setSize(768, 512);
 			frame.setTitle(title);
 			frame.setVisible(true);

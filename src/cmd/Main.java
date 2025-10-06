@@ -1,13 +1,12 @@
 package cmd;
-import java.io.DataInputStream;
 //DBZ Sparking! HYPER Patcher by ViveTheJoestar
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.Scanner;
-
 import gui.App;
 
 public class Main {
@@ -27,7 +26,8 @@ public class Main {
 		boolean[] patchBools = {
 			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
 			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon"),
-			patchArg.equals("-fix-goku"), patchArg.equals("-fix-buutenks")
+			patchArg.equals("-fix-goku"), patchArg.equals("-fix-buutenks"),
+			patchArg.equals("-fix-krillin")
 		};
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
@@ -124,6 +124,21 @@ public class Main {
 			writePatchFile(iso, 1293348864, 338624, "Buu_A_Voice_JP.pak");
 			System.out.println("SUCCESS: Super Buu - Gotenks Absorbed is patched!");
 		}
+		if (patchBools[6]) {
+			patchCnt++;
+			byte[] dmgBytes = {-122,106}, blockedDmgBytes = {-12,31};
+			//addresses to Krillin's PAKs' "023_blast_param.dat" (pointing at the Ultimate Blast ID)
+			int[] addrs = {692574012,693184028,693804700,694387036,695013180,695623196,696243868,696826204};
+			for (int i=0; i<8; i++) {
+				iso.seek(addrs[i]);
+				iso.write(-43); //overwrite upper byte of Ultimate Blast ID int (722 -> 725)
+				iso.seek(addrs[i]+368); //go to Ultimate Blast damage address
+				iso.write(dmgBytes);
+				iso.seek(addrs[i]+380); //go to blocked Ultimate Blast damage address
+				iso.write(blockedDmgBytes);
+			}
+			System.out.println("SUCCESS: Krillin is patched!");
+		}
 		//only close RAF (write changes to ISO) if at least one patch argument is valid
 		if (patchCnt>0) iso.close();
 		else System.out.println("ERROR: Invalid patch argument provided.");
@@ -139,9 +154,10 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		try {
-			String version = "v1.4";
+			String version = "v1.5";
 			String[] patchArgs = {
-				"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon","-fix-goku","-fix-buutenks","-fix-all"
+				"-fix-crash","-fix-typos","-fix-vegeta","-fix-pikkon",
+				"-fix-goku","-fix-buutenks","-fix-krillin","-fix-all"
 			};
 			String[] patchDesc = {
 				"Fixes Dragon History crash (which prevented \"The World's Strongest\" from being completed),"
@@ -153,6 +169,7 @@ public class Main {
 				"Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture.",
 				"Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign"
 				+ "\nand Super Buu Kamikaze Attack when Japanese voices are selected.",
+				"Fixes the damage of Krillin's Spirit Bomb to be in line with other Spirit Bombs.",
 				"Applies all the patches listed above."
 			};
 			if (args.length>1) {

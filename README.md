@@ -1,7 +1,19 @@
 # dbzs-hyper-patcher
 A patcher for DBZ Sparking! HYPER that fixes a variety of issues: **crashes, typos, audio, visuals**. Comes with both a **command-line** and **GUI** version. 
 
-Either way, it will only work as intended on an **untouched copy of DBZ Sparking! HYPER**, which can be found on [its website](https://dbzs-hyper.nekoweb.org/).
+Either way, it will only work as intended on an **untouched (or already patched) copy of DBZ Sparking! HYPER**, which can be found on [its website](https://dbzs-hyper.nekoweb.org/).
+
+# List of Patches
+| Patch | Argument | Description |
+| ------ | ------ | ------ |
+| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), and Great Ape detransformation crash (by disabling it for all costumes). |
+| Fix Story Mode Typos | -fix-typos | Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences). |
+| Fix Vegeta Victory Quote | -fix-vegeta | Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13. |
+| Fix Pikkon Permanent Halo | -fix-pikkon | Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume. |
+| Fix Kaio-ken Goku Face | -fix-goku | Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture. |
+| Fix JP Buutenks Special Attack SFX | -fix-buutenks | Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign and Super Buu Kamikaze Attack when Japanese voices are selected. |
+| Fix Krillin Spirit Bomb | -fix-krillin | Fixes the damage of Krillin's Spirit Bomb to be in line with other Spirit Bombs. |
+| Fix All | -fix-all | Applies all the patches listed above. |
 
 # How to Use
 ## Command-line
@@ -21,7 +33,7 @@ Either way, it will only work as intended on an **untouched copy of DBZ Sparking
 2. Choose the patch type from the dropdown menu ~~(or JComboBox)~~. For explanation on the chosen patch type, hover over it for a tooltip to show up.
 <img width="1408" height="742" alt="image" src="https://github.com/user-attachments/assets/17b17628-1590-43ad-a2b0-13be92f181a0" />
 
-3. Click the ``Apply Patch`` button and choose the untouched copy of DBZ Sparking! HYPER.
+3. Click the ``Apply Patch`` button and choose the untouched (or already patched) copy of DBZ Sparking! HYPER.
 <img width="944" height="632" alt="image" src="https://github.com/user-attachments/assets/5bf591a3-2431-43b3-ae9b-dfee1ca5e962" />
 
 <img width="1118" height="748" alt="image" src="https://github.com/user-attachments/assets/f556ee3f-1965-48c7-9727-f7056b8c4bcf" />
