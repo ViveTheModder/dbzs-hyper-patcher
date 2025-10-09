@@ -18,9 +18,11 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -37,16 +40,30 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import cmd.Main;
+import cmd.TranslatedText;
 
 public class App {
+	private static String[] text; //the only static variable in the program, and for good reason
+	//solution taken from Stephen C's answer in stackoverflow (https://stackoverflow.com/a/1402762)
+	private static boolean isInternetAvailable(URI uri) {
+		try {
+			URL url = uri.toURL();
+			URLConnection urlc = url.openConnection();
+			urlc.connect();
+			urlc.getInputStream().close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
 	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, String title, Toolkit tk) throws IOException {
 		RandomAccessFile iso = null;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("CD image (*.ISO)", "iso");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23]+" (*.ISO)", "iso");
 		chooser.addChoosableFileFilter(filter);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setFileFilter(filter);
-		chooser.setDialogTitle("Open DBZ Sparking! HYPER ISO...");
+		chooser.setDialogTitle(text[24]);
 		while (iso == null) {
 			int result = chooser.showOpenDialog(null);
 			if (result == JFileChooser.APPROVE_OPTION) {
@@ -54,27 +71,37 @@ public class App {
 				if (!Main.isHyperIso(iso)) {
 					iso = null;
 					errorBeep(tk);
-					JOptionPane.showMessageDialog(chooser, "Invalid DBZ Sparking! HYPER ISO "
-					+ "(does not match original copy).", title, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(chooser, text[25], title, JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			else if (result == JFileChooser.CANCEL_OPTION) break;
 		}
 		return iso;
 	}
+	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, JMenu[] menus, String ver) {
+		String[] patchDesc = new String[8], patchTypes = new String[8];
+		System.arraycopy(text, 15, patchDesc, 0, 8);
+		System.arraycopy(text, 26, patchTypes, 0, 8);
+		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
+		cb.setToolTipText(null); //disable tooltip until a patch type is selected
+		pb.setText(text[34]);
+		pl.setText(text[35]);
+		int[] menuIdx = {36,37,52};
+		for (int i=0; i<menus.length; i++) menus[i].setText(text[menuIdx[i]]);
+		f.setTitle(text[0]+" "+ver);
+	}
 	private static void errorBeep(Toolkit defToolkit) {
 		Runnable runWinErrorSnd = (Runnable) defToolkit.getDesktopProperty("win.sound.exclamation");
 		if (runWinErrorSnd!=null) runWinErrorSnd.run();
 	}
-	public static void setApp(String[] patchArgs, String[] patchDesc, String version) {
+	public static void setApp(String[] patchArgs, String version, TranslatedText tt) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			String[] patchTypes = {
-				"Fix Game Crashes", "Fix Story Mode Typos", "Fix Vegeta Victory Quote",
-				"Fix Pikkon Permanent Halo", "Fix Kaio-ken Goku Face", "Fix JP Buutenks Special Attack SFX", 
-				"Fix Krillin Spirit Bomb" ,"Fix All"
-			};
-			String title = "DBZ Sparking! HYPER Patcher "+version;
+			text = tt.getText(); //look, it was either this, or passing the text array from Main as a param
+			String[] langs = tt.getLangs(), patchDesc = new String[8], patchTypes = new String[8];
+			System.arraycopy(text, 15, patchDesc, 0, 8);
+			System.arraycopy(text, 26, patchTypes, 0, 8);
+			String title = text[0]+" "+version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
 			//initialize components
 			Color bgColor = new Color(109, 103, 202);
@@ -85,11 +112,11 @@ public class App {
 			Image imgSmall = img.getScaledInstance(384, 192, Image.SCALE_SMOOTH);
 			ImageIcon icon = new ImageIcon(imgSmall);
 			JComboBox<String> patchBox = new JComboBox<String>(patchTypes);
-			JButton patch = new JButton("Apply Patch");
+			JButton patch = new JButton(text[34]);
 			JFrame frame = new JFrame();
 			JFileChooser chooser = new JFileChooser();
-			JLabel iconLabel = new JLabel(""), patchLabel = new JLabel("Patch Type");
-			JMenu greets = new JMenu("Greetings"), update = new JMenu("Update");
+			JLabel iconLabel = new JLabel(""), patchLabel = new JLabel(text[35]);
+			JMenu[] menus = {new JMenu(text[36]), new JMenu(text[37]), new JMenu(text[52])};
 			JMenuBar menuBar = new JMenuBar();
 			JPanel panel = new JPanel(new GridBagLayout()) {
 			    @Override //set gradient background
@@ -104,8 +131,10 @@ public class App {
 			    	g2.dispose();
 			    }
 			};
+			JMenuItem[] langItems = new JMenuItem[langs.length];
+			for (int i=0; i<langs.length; i++) langItems[i] = new JMenuItem(langs[i]);
 			//give menus their own listeners
-			greets.addMenuListener(new MenuListener() {
+			menus[0].addMenuListener(new MenuListener() {
 				@Override
 				public void menuSelected(MenuEvent e) {
 					String[] users = {"Bεzzo", "Kyo MODS", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin"};
@@ -114,17 +143,14 @@ public class App {
 						"https://www.youtube.com/@kyokomodsbt3","https://www.youtube.com/@valen2006",
 						"https://www.youtube.com/@VSVIDEOSOFC","https://www.youtube.com/@XenoCarmesin"
 					};
-					String[] desc = {
-						"providing the Sim Dragon crash fix",
-						"playtesting and pointing out Krillin's Spirit Bomb damage","pointing out the Pikkon halo bug",
-						"pointing out the Kaio-ken Goku face bug", "pointing out overlooked Dragon History typos"
-					};
+					String[] desc = new String[5];
+					System.arraycopy(text, 38, desc, 0, 5);
 					Box mainBox = Box.createVerticalBox();
 					Box[] userBoxes = new Box[users.length];
 					for (int i=0; i<users.length; i++) {
 						final int index = i;
 						JLabel userLabel = new JLabel(users[i]);
-						JLabel descLabel = new JLabel(" for " + desc[i]);
+						JLabel descLabel = new JLabel(" "+desc[i]);
 						descLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 						userLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 						userLabel.setForeground(new Color(0x74,0x31,0xdd));
@@ -132,13 +158,17 @@ public class App {
 							@Override
 							public void mouseClicked(MouseEvent e) {
 								try {
-									Desktop.getDesktop().browse(new URI(links[index]));
-								} catch (URISyntaxException e1) {
+									URI uri = new URI(links[index]);
+									if (isInternetAvailable(uri)) {
+										Desktop.getDesktop().browse(uri);
+										frame.dispose();
+									}
+									else {
+										errorBeep(defToolkit);
+										JOptionPane.showMessageDialog(null, text[43], title, JOptionPane.WARNING_MESSAGE);
+									}
+								} catch (Exception e1) {
 									e1.printStackTrace();
-								} catch (IOException e1) {
-									errorBeep(defToolkit);
-									String msg = "Link could not be opened. Check your Internet connection!";
-									JOptionPane.showMessageDialog(null, msg, title, JOptionPane.WARNING_MESSAGE);
 								}
 							}
 						});
@@ -155,19 +185,21 @@ public class App {
 				@Override
 				public void menuCanceled(MenuEvent e) {}
 			});
-			update.addMenuListener(new MenuListener() {
+			menus[1].addMenuListener(new MenuListener() {
 				@Override
 				public void menuSelected(MenuEvent e) {
 					String link = "https://github.com/ViveTheModder/dbzs-hyper-patcher/releases";
 					try {
-						Desktop.getDesktop().browse(new URI(link));
-						frame.dispose();
-					} catch (IOException e1) {
-						errorBeep(defToolkit);
-						String msg = "Tool could not be updated. Check your Internet connection!";
-						JOptionPane.showMessageDialog(null, msg, title, JOptionPane.WARNING_MESSAGE);
-					} catch (URISyntaxException e1) {
-						// TODO Auto-generated catch block
+						URI uri = new URI(link);
+						if (isInternetAvailable(uri)) {
+							Desktop.getDesktop().browse(uri);
+							frame.dispose();
+						}
+						else {
+							errorBeep(defToolkit);
+							JOptionPane.showMessageDialog(null, text[44], title, JOptionPane.WARNING_MESSAGE);
+						}
+					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -176,6 +208,20 @@ public class App {
 				@Override
 				public void menuCanceled(MenuEvent e) {}
 			});
+			//give menu items their own listeners
+			for (int i=0; i<langs.length; i++) {
+				final int index = i;
+				langItems[i].addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						String[] abbrs = TranslatedText.getAbbrs();
+						String[] newText = new TranslatedText(abbrs[index]).getText();
+						text = newText;
+						System.arraycopy(text, 15, patchDesc, 0, 8); //update patch descriptions for tooltips
+						changeLanguage(patchBox, patch, frame, patchLabel, menus, version);
+					}
+				});
+			}
 			//set component properties
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			iconLabel.setIcon(icon);
@@ -192,8 +238,7 @@ public class App {
 			patch.setBorderPainted(true);
 			patch.setForeground(Color.WHITE);
 			patch.setFont(tahomaBold);
-			patch.setToolTipText("<html>Patch Types are chronologically ordered, but please make sure "
-			+ "to apply all of them<br>at once, to an untouched (or already patched) DBZ Sparking! HYPER copy.</html>");
+			patch.setToolTipText("<html>"+text[45]+"</html>");
 			//properly display background color on Windows 10 or higher
 			patch.setContentAreaFilled(false);
 			patch.setOpaque(true);
@@ -214,11 +259,11 @@ public class App {
 						if (iso != null) {
 							chooser.setCurrentDirectory(chooser.getSelectedFile());
 							long start = System.currentTimeMillis();
-							Main.applyPatch(iso, patchArgs[patchBox.getSelectedIndex()]);
+							Main.applyPatch(iso, patchArgs[patchBox.getSelectedIndex()], text);
 							long end = System.currentTimeMillis();
-							String message = String.format("ISO patched in %.3f seconds!", (end-start)/1000.0);
+							double time = (end-start)/1000.0;
 							defToolkit.beep();
-							JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, text[46].replace("[time]", ""+time), title, JOptionPane.INFORMATION_MESSAGE);
 						}
 					} catch (IOException e1) {
 						e1.printStackTrace();
@@ -226,8 +271,10 @@ public class App {
 				}
 			});
 			//add components
-			menuBar.add(greets);
-			menuBar.add(update);
+			menuBar.add(menus[0]);
+			menuBar.add(menus[1]);
+			menuBar.add(menus[2]);
+			for (int i=0; i<langs.length; i++) menus[2].add(langItems[i]);
 			panel.add(iconLabel,gbc);
 			panel.add(patchLabel,gbc);
 			panel.add(new JLabel(" "),gbc);
@@ -239,15 +286,14 @@ public class App {
 			//set frame properties
 			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			frame.setIconImage(img);
+			frame.pack();
 			frame.setLocationRelativeTo(null);
 			frame.setJMenuBar(menuBar);
 			frame.setSize(768, 512);
 			frame.setTitle(title);
 			frame.setVisible(true);
 		} catch (HeadlessException e) {
-			String os = System.getProperty("os.name");
-			System.out.println("ERROR: This OS ("+os+") does not support the Swing library.\n"
-			+ "Run the program from the command line instead. Use -h for help.");
+			System.out.println(text[49]+text[47].replace("[os]", System.getProperty("os.name")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
