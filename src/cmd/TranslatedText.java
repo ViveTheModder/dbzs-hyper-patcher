@@ -54,14 +54,16 @@ public class TranslatedText {
 	}
 	public TranslatedText(String lang) {
 		try {
-			File[] langFiles = new File("src/lang/").listFiles(
+			//I originally wanted this inside the jar (as a resource), but FileSystemNotFoundException... thanks a bunch
+			File langFolder = new File("lang/");
+			File[] langFiles = langFolder.listFiles(
 				(dir, name) -> (name.startsWith("lang") && name.endsWith(".txt"))
 			);
-			File[] txtFiles = new File("src/lang/").listFiles(
+			File[] txtFiles = langFolder.listFiles(
 				(dir, name) -> (name.startsWith("text") && name.endsWith(".txt"))
 			);
 			//binary search is used in case more languages are added in the future...
-			int lang_en_idx = Arrays.binarySearch(langFiles, new File("src/lang/lang_en.txt"));
+			int lang_en_idx = Arrays.binarySearch(langFiles, new File(langFolder.toString()+"/lang_en.txt"));
 			for (int i=0; i<langFiles.length; i++) {
 				if (langFiles[i].getName().endsWith(lang + ".txt")) langs = getLangsFromFile(langFiles[i]);
 				else langs = getLangsFromFile(langFiles[lang_en_idx]); //set to lang_en.txt if language from locale is not supported
