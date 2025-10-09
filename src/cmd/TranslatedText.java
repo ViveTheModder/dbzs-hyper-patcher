@@ -11,7 +11,7 @@ public class TranslatedText {
 	private String[] text = new String[53];
 	
 	public static String[] getAbbrs() {
-		File[] langFiles = new File("src/lang/").listFiles(
+		File[] langFiles = new File("lang/").listFiles(
 			(dir, name) -> (name.startsWith("lang") && name.endsWith(".txt"))
 		);
 		for (int i=0; i<2; i++) abbrs[i] = langFiles[i].getName().substring(5, 7);
