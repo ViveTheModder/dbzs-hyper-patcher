@@ -56,7 +56,8 @@ public class App {
 			return false;
 		}
 	}
-	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, String title, Toolkit tk) throws IOException {
+	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, String title, Toolkit tk)
+	throws IOException {
 		RandomAccessFile iso = null;
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23]+" (*.ISO)", "iso");
 		chooser.addChoosableFileFilter(filter);
@@ -71,22 +72,25 @@ public class App {
 				if (!Main.isHyperIso(iso)) {
 					iso = null;
 					errorBeep(tk);
-					JOptionPane.showMessageDialog(chooser, text[25], title, JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(chooser, text[25], title, 
+					JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			else if (result == JFileChooser.CANCEL_OPTION) break;
 		}
 		return iso;
 	}
-	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, JMenu[] menus, String ver) {
-		String[] patchDesc = new String[8], patchTypes = new String[8];
-		System.arraycopy(text, 15, patchDesc, 0, 8);
-		System.arraycopy(text, 26, patchTypes, 0, 8);
+	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
+	JMenu[] menus, String ver) {
+		String[] patchTypes = new String[9];
+		System.arraycopy(text, 26, patchTypes, 0, 7);
+		patchTypes[7] = text[53];
+		patchTypes[8] = text[33];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
 		cb.setToolTipText(null); //disable tooltip until a patch type is selected
 		pb.setText(text[34]);
 		pl.setText(text[35]);
-		int[] menuIdx = {36,37,52};
+		int[] menuIdx = {36, 37, 52};
 		for (int i=0; i<menus.length; i++) menus[i].setText(text[menuIdx[i]]);
 		f.setTitle(text[0]+" "+ver);
 	}
@@ -97,10 +101,17 @@ public class App {
 	public static void setApp(String[] patchArgs, String version, TranslatedText tt) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			text = tt.getText(); //look, it was either this, or passing the text array from Main as a param
-			String[] langs = tt.getLangs(), patchDesc = new String[8], patchTypes = new String[8];
-			System.arraycopy(text, 15, patchDesc, 0, 8);
-			System.arraycopy(text, 26, patchTypes, 0, 8);
+			//look, it was either this, or passing the text array from Main as a param
+			text = tt.getText();
+			String[] langs = tt.getLangs();
+			String[] patchDesc = new String[patchArgs.length];
+			String[] patchTypes = new String[patchArgs.length];
+			System.arraycopy(text, 15, patchDesc, 0, 7);
+			patchDesc[7] = text[54];
+			patchDesc[8] = text[22];
+			System.arraycopy(text, 26, patchTypes, 0, 7);
+			patchTypes[7] = text[53];
+			patchTypes[8] = text[33];
 			String title = text[0]+" "+version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
 			//initialize components
@@ -137,20 +148,25 @@ public class App {
 			menus[0].addMenuListener(new MenuListener() {
 				@Override
 				public void menuSelected(MenuEvent e) {
-					String[] users = {"Bεzzo", "Kyo MODS", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin"};
+					String[] users = {
+						"Bεzzo", "Kyo MODS", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin", "Es"
+					};
 					String[] links = {
 						"https://bsky.app/profile/did:plc:4hh7ubpzmyq5raktz5sxc6ig",
-						"https://www.youtube.com/@kyokomodsbt3","https://www.youtube.com/@valen2006",
-						"https://www.youtube.com/@VSVIDEOSOFC","https://www.youtube.com/@XenoCarmesin"
+						"https://www.youtube.com/@kyokomodsbt3",
+						"https://www.youtube.com/@valen2006", "https://www.youtube.com/@VSVIDEOSOFC",
+						"https://www.youtube.com/@XenoCarmesin",
+						"https://www.youtube.com/channel/UCI6ZwJwlDVam6nUayFB9h7w"
 					};
-					String[] desc = new String[5];
+					String[] desc = new String[users.length];
 					System.arraycopy(text, 38, desc, 0, 5);
+					desc[5] = text[55];
 					Box mainBox = Box.createVerticalBox();
 					Box[] userBoxes = new Box[users.length];
 					for (int i=0; i<users.length; i++) {
 						final int index = i;
 						JLabel userLabel = new JLabel(users[i]);
-						JLabel descLabel = new JLabel(" "+desc[i]);
+						JLabel descLabel = new JLabel(" " + desc[i]);
 						descLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 						userLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 						userLabel.setForeground(new Color(0x74,0x31,0xdd));
@@ -165,11 +181,10 @@ public class App {
 									}
 									else {
 										errorBeep(defToolkit);
-										JOptionPane.showMessageDialog(null, text[43], title, JOptionPane.WARNING_MESSAGE);
+										JOptionPane.showMessageDialog(null, text[43], title, 
+										JOptionPane.WARNING_MESSAGE);
 									}
-								} catch (Exception e1) {
-									e1.printStackTrace();
-								}
+								} catch (Exception e1) {e1.printStackTrace();}
 							}
 						});
 						userBoxes[i] = Box.createHorizontalBox();
@@ -177,8 +192,10 @@ public class App {
 						userBoxes[i].add(descLabel);
 						mainBox.add(userBoxes[i]);
 					}
-					ImageIcon iconSmall = new ImageIcon(img.getScaledInstance(256, 128, Image.SCALE_SMOOTH));
-					JOptionPane.showMessageDialog(null, mainBox, title, JOptionPane.INFORMATION_MESSAGE, iconSmall);
+					ImageIcon iconSmall = new ImageIcon(img.getScaledInstance(256, 128,
+					Image.SCALE_SMOOTH));
+					JOptionPane.showMessageDialog(null, mainBox, title, 
+					JOptionPane.INFORMATION_MESSAGE, iconSmall);
 				}
 				@Override
 				public void menuDeselected(MenuEvent e) {}
@@ -197,11 +214,10 @@ public class App {
 						}
 						else {
 							errorBeep(defToolkit);
-							JOptionPane.showMessageDialog(null, text[44], title, JOptionPane.WARNING_MESSAGE);
+							JOptionPane.showMessageDialog(null, text[44], title, 
+							JOptionPane.WARNING_MESSAGE);
 						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
+					} catch (Exception e1) {e1.printStackTrace();}
 				}
 				@Override
 				public void menuDeselected(MenuEvent e) {}
@@ -217,7 +233,6 @@ public class App {
 						String[] abbrs = TranslatedText.getAbbrs();
 						String[] newText = new TranslatedText(abbrs[index]).getText();
 						text = newText;
-						System.arraycopy(text, 15, patchDesc, 0, 8); //update patch descriptions for tooltips
 						changeLanguage(patchBox, patch, frame, patchLabel, menus, version);
 					}
 				});
@@ -246,8 +261,10 @@ public class App {
 			patchBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int index = patchBox.getSelectedIndex();
-					patchBox.setToolTipText("<html>"+patchDesc[index].replaceAll("\n", "<br>")+"</html>");
+					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 22};
+					int index = indexArray[patchBox.getSelectedIndex()];
+					patchBox.setToolTipText("<html>"+text[index].replaceAll("\n", "<br>")
+					+"</html>");
 				}
 			});
 			//give button its action listener
@@ -258,12 +275,14 @@ public class App {
 						RandomAccessFile iso = getIsoFromChooser(chooser, title, defToolkit);
 						if (iso != null) {
 							chooser.setCurrentDirectory(chooser.getSelectedFile());
+							int patchIndex = patchBox.getSelectedIndex();
 							long start = System.currentTimeMillis();
-							Main.applyPatch(iso, patchArgs[patchBox.getSelectedIndex()], text);
+							Main.applyPatch(iso, patchArgs[patchIndex], patchArgs, text);
 							long end = System.currentTimeMillis();
 							double time = (end-start)/1000.0;
 							defToolkit.beep();
-							JOptionPane.showMessageDialog(null, text[46].replace("[time]", ""+time), title, JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, text[46].replace("[time]", ""+time), 
+							title, JOptionPane.INFORMATION_MESSAGE);
 						}
 					} catch (IOException e1) {
 						e1.printStackTrace();
@@ -293,9 +312,7 @@ public class App {
 			frame.setTitle(title);
 			frame.setVisible(true);
 		} catch (HeadlessException e) {
-			System.out.println(text[49]+text[47].replace("[os]", System.getProperty("os.name")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			System.out.println(text[49] + text[47].replace("[os]", System.getProperty("os.name")));
+		} catch (Exception e) {e.printStackTrace();}
 	}
 }

@@ -60,3 +60,6 @@ COMMON:
 EXTRA:
 "Raditz está "
 "Língua"
+"Corrigir Itens Z aleatórios do Sim Dragon"
+"Previne que o Itens Z removidos apareçam no Sim Dragon."
+"por apontar o bug do Iten Z aleatório do Sim Dragon"

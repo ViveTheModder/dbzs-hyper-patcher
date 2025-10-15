@@ -60,3 +60,6 @@ COMMON:
 EXTRA:
 "Raditz is "
 "Language"
+"Fix Sim Dragon Random Z-Items"
+"Prevents removed Z-Items from showing up in Sim Dragon."
+"for pointing out the Sim Dragon Random Z-Item bug"

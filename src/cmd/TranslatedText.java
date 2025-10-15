@@ -7,8 +7,9 @@ import java.util.Scanner;
 
 public class TranslatedText {
 	private static String[] abbrs = new String[2]; //two-letter abbreviations for each language
+	private static final int NUM_LINES = 56;
 	private String[] langs = new String[2];
-	private String[] text = new String[53];
+	private String[] text = new String[NUM_LINES];
 	
 	public static String[] getAbbrs() {
 		File[] langFiles = new File("lang/").listFiles(
@@ -26,7 +27,7 @@ public class TranslatedText {
 	private String[] getTextFromFile(File txt) throws IOException {
 		int lineIdx = 0;
 		Scanner sc = new Scanner(txt);
-		String[] text = new String[53];
+		String[] text = new String[NUM_LINES];
 		while (sc.hasNextLine() && lineIdx < text.length) {
 			String line = sc.nextLine();
 			if (line.startsWith("\"")) {
@@ -54,7 +55,7 @@ public class TranslatedText {
 	}
 	public TranslatedText(String lang) {
 		try {
-			//I originally wanted this inside the jar (as a resource), but FileSystemNotFoundException... thanks a bunch
+			//I originally wanted this inside the jar, but FileSystemNotFoundException... yeah
 			File langFolder = new File("lang/");
 			File[] langFiles = langFolder.listFiles(
 				(dir, name) -> (name.startsWith("lang") && name.endsWith(".txt"))
@@ -63,17 +64,19 @@ public class TranslatedText {
 				(dir, name) -> (name.startsWith("text") && name.endsWith(".txt"))
 			);
 			//binary search is used in case more languages are added in the future...
-			int lang_en_idx = Arrays.binarySearch(langFiles, new File(langFolder.toString()+"/lang_en.txt"));
+			int lang_en_idx = Arrays.binarySearch(langFiles, new File(langFolder.toString() +
+			"/lang_en.txt"));
 			for (int i=0; i<langFiles.length; i++) {
-				if (langFiles[i].getName().endsWith(lang + ".txt")) langs = getLangsFromFile(langFiles[i]);
-				else langs = getLangsFromFile(langFiles[lang_en_idx]); //set to lang_en.txt if language from locale is not supported
+				if (langFiles[i].getName().endsWith(lang + ".txt"))
+					langs = getLangsFromFile(langFiles[i]);
+				 //set to lang_en.txt if language from locale is not supported
+				else langs = getLangsFromFile(langFiles[lang_en_idx]);
 			}
 			for (File txt: txtFiles) {
 				if (txt.getName().endsWith(lang + ".txt")) text = getTextFromFile(txt);
-				else text = getTextFromFile(txtFiles[lang_en_idx]); //set to text_en.txt if language from locale is not supported
+				//set to text_en.txt if language from locale is not supported
+				else text = getTextFromFile(txtFiles[lang_en_idx]);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (IOException e) {e.printStackTrace();}
 	}
 }
