@@ -1,19 +1,20 @@
 # dbzs-hyper-patcher
-A patcher for DBZ Sparking! HYPER that fixes a variety of issues: **crashes, typos, audio, visuals**. Comes with both a **command-line** and **GUI** version. 
+A patcher for DBZ Sparking! HYPER that fixes a variety of issues: **crashes, typos, audio, visuals**. Comes with both a **command-line** and **GUI** version, which includes **Portuguese (PT-BR) translation**. 
 
 Either way, it will only work as intended on an **untouched (or already patched) copy of DBZ Sparking! HYPER**, which can be found on [its website](https://dbzs-hyper.nekoweb.org/).
 
 # List of Patches
-| Patch | Argument | Description |
-| ------ | ------ | ------ |
-| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), and Great Ape detransformation crash (by disabling it for all costumes). |
-| Fix Story Mode Typos | -fix-typos | Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences). |
-| Fix Vegeta Victory Quote | -fix-vegeta | Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13. |
-| Fix Pikkon Permanent Halo | -fix-pikkon | Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume. |
-| Fix Kaio-ken Goku Face | -fix-goku | Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture. |
-| Fix JP Buutenks Special Attack SFX | -fix-buutenks | Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign and Super Buu Kamikaze Attack when Japanese voices are selected. |
-| Fix Krillin Spirit Bomb | -fix-krillin | Fixes the damage of Krillin's Spirit Bomb to be in line with other Spirit Bombs. |
-| Fix All | -fix-all | Applies all the patches listed above. |
+| Patch | Argument | Description | Release |
+| ------ | ------ | ------ | ------ |
+| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), Great Ape detransformation crash (by disabling it for all costumes), and Raditz crash (from his 1st damaged costume; only happens on console). | 26 Sep. - 28 Sep., 9 Oct.
+| Fix Story Mode Typos | -fix-typos | Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences). | 26 Sep.
+| Fix Vegeta Victory Quote | -fix-vegeta | Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13. | 26 Sep.
+| Fix Pikkon Permanent Halo | -fix-pikkon | Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume. | 28 Sep.
+| Fix Kaio-ken Goku Face | -fix-goku | Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture. | 29 Sep.
+| Fix JP Buutenks Special Attack SFX | -fix-buutenks | Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign and Super Buu Kamikaze Attack when Japanese voices are selected. | 3 Oct.
+| Fix Krillin Spirit Bomb | -fix-krillin | Fixes the damage of Krillin's Spirit Bomb to be in line with other Spirit Bombs. | 6 Oct.
+| Fix Sim Dragon Random Z-Items | -fix-krillin | Prevents removed Z-Items from showing up in Sim Dragon. | 15 Oct.
+| Fix All | -fix-all | Applies all the patches listed above. | 26 Sep. - 15 Oct.
 
 # How to Use
 ## Command-line
