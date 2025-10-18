@@ -1,0 +1,4 @@
+LANGUAGES:
+"Inglés"
+"Español (España)"
+"Portugués (Brasil)"

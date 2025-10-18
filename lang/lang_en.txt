@@ -1,3 +1,4 @@
 LANGUAGES:
 "English"
+"Spanish (Spain)"
 "Portuguese (Brazil)"

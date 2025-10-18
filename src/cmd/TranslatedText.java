@@ -6,16 +6,17 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class TranslatedText {
-	private static String[] abbrs = new String[2]; //two-letter abbreviations for each language
-	private static final int NUM_LINES = 56;
-	private String[] langs = new String[2];
+	private static final int NUM_LANGS = 3;
+	private static final int NUM_LINES = 57;
+	private static String[] abbrs = new String[NUM_LANGS]; //two-letter abbreviations for each language
+	private String[] langs = new String[NUM_LANGS];
 	private String[] text = new String[NUM_LINES];
 	
 	public static String[] getAbbrs() {
 		File[] langFiles = new File("lang/").listFiles(
 			(dir, name) -> (name.startsWith("lang") && name.endsWith(".txt"))
 		);
-		for (int i=0; i<2; i++) abbrs[i] = langFiles[i].getName().substring(5, 7);
+		for (int i=0; i<NUM_LANGS; i++) abbrs[i] = langFiles[i].getName().substring(5, 7);
 		return abbrs;
 	}
 	public String[] getLangs() {
@@ -42,7 +43,7 @@ public class TranslatedText {
 	private String[] getLangsFromFile(File txt) throws IOException {
 		int lineIdx = 0;
 		Scanner sc = new Scanner(txt);
-		String[] langs = new String[2];
+		String[] langs = new String[NUM_LANGS];
 		while (sc.hasNextLine() && lineIdx < langs.length) {
 			String line = sc.nextLine();
 			if (line.startsWith("\"")) {
@@ -67,13 +68,18 @@ public class TranslatedText {
 			int lang_en_idx = Arrays.binarySearch(langFiles, new File(langFolder.toString() +
 			"/lang_en.txt"));
 			for (int i=0; i<langFiles.length; i++) {
-				if (langFiles[i].getName().endsWith(lang + ".txt"))
+				if (langFiles[i].getName().endsWith(lang + ".txt")) {
 					langs = getLangsFromFile(langFiles[i]);
+					break;
+				}
 				 //set to lang_en.txt if language from locale is not supported
 				else langs = getLangsFromFile(langFiles[lang_en_idx]);
 			}
 			for (File txt: txtFiles) {
-				if (txt.getName().endsWith(lang + ".txt")) text = getTextFromFile(txt);
+				if (txt.getName().endsWith(lang + ".txt")) {
+					text = getTextFromFile(txt);
+					break;
+				}
 				//set to text_en.txt if language from locale is not supported
 				else text = getTextFromFile(txtFiles[lang_en_idx]);
 			}

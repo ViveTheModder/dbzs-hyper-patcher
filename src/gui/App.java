@@ -112,7 +112,7 @@ public class App {
 			System.arraycopy(text, 26, patchTypes, 0, 7);
 			patchTypes[7] = text[53];
 			patchTypes[8] = text[33];
-			String title = text[0]+" "+version;
+			String title = text[0] + " " + version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
 			//initialize components
 			Color bgColor = new Color(109, 103, 202);
@@ -149,18 +149,18 @@ public class App {
 				@Override
 				public void menuSelected(MenuEvent e) {
 					String[] users = {
-						"Bεzzo", "Kyo MODS", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin", "Es"
+						"Bεzzo", "Es", "Kyo MODS", "MetalFrieza3000", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin",
 					};
 					String[] links = {
 						"https://bsky.app/profile/did:plc:4hh7ubpzmyq5raktz5sxc6ig",
-						"https://www.youtube.com/@kyokomodsbt3",
+						"https://www.youtube.com/channel/UCI6ZwJwlDVam6nUayFB9h7w",
+						"https://www.youtube.com/@kyokomodsbt3", "https://www.youtube.com/@MetalFreezer3000",
 						"https://www.youtube.com/@valen2006", "https://www.youtube.com/@VSVIDEOSOFC",
 						"https://www.youtube.com/@XenoCarmesin",
-						"https://www.youtube.com/channel/UCI6ZwJwlDVam6nUayFB9h7w"
 					};
 					String[] desc = new String[users.length];
 					System.arraycopy(text, 38, desc, 0, 5);
-					desc[5] = text[55];
+					desc[5] = text[55]; desc[6] = text[56];
 					Box mainBox = Box.createVerticalBox();
 					Box[] userBoxes = new Box[users.length];
 					for (int i=0; i<users.length; i++) {
