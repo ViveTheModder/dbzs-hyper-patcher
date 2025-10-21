@@ -29,7 +29,8 @@ public class Main {
 			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
 			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon"),
 			patchArg.equals("-fix-goku"), patchArg.equals("-fix-buutenks"),
-			patchArg.equals("-fix-krillin"), patchArg.equals("-fix-sim")
+			patchArg.equals("-fix-krillin"), patchArg.equals("-fix-sim"),
+			patchArg.equals("-fix-gohan"), patchArg.equals("-fix-buu")
 		};
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
@@ -163,6 +164,25 @@ public class Main {
 			}
 			System.out.println(text[48] + text[1] + text[50]);
 		}
+		if (patchBools[8]) {
+			int[] addrs = {
+				647025968, 647646864, 648225296, 648879952,
+				649530640, 650149520, 650639312, 651294544, 658068176
+			};
+			for (int i=0; i<9; i++) {
+				iso.seek(addrs[i]);
+				for (int j=0; j<8; j++) iso.write(3); //set to 1st Blast 2 (with teleport)
+			}
+			System.out.println(text[48] + text[57] + text[50]);
+		}
+		if (patchBools[9]) {
+			int[] addrs = {1066472262, 1067047750, 1067627334, 1068202822};
+			for (int i=0; i<4; i++) {
+				iso.seek(addrs[i]);
+				iso.write(2); //set 3rd Rushing Technique to Blaster Wave (as it should be)
+			}
+			System.out.println(text[48] + text[63] + text[50]);
+		}
 		//only write changes to ISO if at least one patch argument is valid
 		if (patchCnt > 0) iso.close();
 		else System.out.println(text[49] + text[10]);
@@ -179,12 +199,14 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		try {
+			int[] patchDescIdx = {54, 58, 63, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v1.8";
+			String lang = loc.getLanguage(), version = "v1.9";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
-				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", "-fix-all"
+				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 
+				"-fix-gohan", "-fix-buu", "-fix-all"
 			};
 			TranslatedText tt = new TranslatedText(lang);
 			//terminal-only code
@@ -192,8 +214,7 @@ public class Main {
 				String[] text = tt.getText();
 				String[] patchDesc = new String[patchArgs.length];
 				System.arraycopy(text, 15, patchDesc, 0, 7);
-				patchDesc[7] = text[54];
-				patchDesc[8] = text[22];
+				for (int i=7; i<11; i++) patchDesc[i] = text[patchDescIdx[i-7]];
 				if (args.length > 1) {
 					File tmp = new File(args[0].replace("\"", ""));
 					String tmpName = tmp.getName();

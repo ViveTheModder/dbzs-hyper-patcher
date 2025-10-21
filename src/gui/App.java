@@ -36,14 +36,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import cmd.Main;
 import cmd.TranslatedText;
 
 public class App {
-	private static String[] text; //the only static variable in the program, and for good reason
+	private static int currPatchBoxIdx;
+	private static String[] text;
 	//solution taken from Stephen C's answer in stackoverflow (https://stackoverflow.com/a/1402762)
 	private static boolean isInternetAvailable(URI uri) {
 		try {
@@ -82,16 +81,18 @@ public class App {
 	}
 	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
 	JMenu[] menus, String ver) {
-		String[] patchTypes = new String[9];
+		String[] patchTypes = new String[11];
 		System.arraycopy(text, 26, patchTypes, 0, 7);
-		patchTypes[7] = text[53];
-		patchTypes[8] = text[33];
+		int[] patchIdx = {53, 59, 65, 33};
+		for (int i=7; i<11; i++) patchTypes[i] = text[patchIdx[i-7]];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
+		cb.setSelectedIndex(currPatchBoxIdx); //preserve currently selected item index
 		cb.setToolTipText(null); //disable tooltip until a patch type is selected
 		pb.setText(text[34]);
 		pl.setText(text[35]);
-		int[] menuIdx = {36, 37, 52};
+		int[] menuIdx = {52, 62}, helpItemIdx = {37, 61, 36};
 		for (int i=0; i<menus.length; i++) menus[i].setText(text[menuIdx[i]]);
+		for (int i=0; i<3; i++) menus[1].getItem(i).setText(text[helpItemIdx[i]]);
 		f.setTitle(text[0]+" "+ver);
 	}
 	private static void errorBeep(Toolkit defToolkit) {
@@ -102,16 +103,20 @@ public class App {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			//look, it was either this, or passing the text array from Main as a param
+			int[] patchDescIdx = {54, 58, 64, 22}, patchTypeIdx = {53, 59, 65, 33};
 			text = tt.getText();
 			String[] langs = tt.getLangs();
+			String[] links = {
+				"https://github.com/ViveTheModder/dbzs-hyper-patcher/releases",
+				"https://dbzs-hyper.nekoweb.org"};
 			String[] patchDesc = new String[patchArgs.length];
 			String[] patchTypes = new String[patchArgs.length];
 			System.arraycopy(text, 15, patchDesc, 0, 7);
-			patchDesc[7] = text[54];
-			patchDesc[8] = text[22];
 			System.arraycopy(text, 26, patchTypes, 0, 7);
-			patchTypes[7] = text[53];
-			patchTypes[8] = text[33];
+			for (int i=7; i<11; i++) {
+				patchDesc[i] = text[patchDescIdx[i-7]];
+				patchTypes[i] = text[patchTypeIdx[i-7]];
+			}
 			String title = text[0] + " " + version;
 			Toolkit defToolkit = Toolkit.getDefaultToolkit();
 			//initialize components
@@ -127,7 +132,7 @@ public class App {
 			JFrame frame = new JFrame();
 			JFileChooser chooser = new JFileChooser();
 			JLabel iconLabel = new JLabel(""), patchLabel = new JLabel(text[35]);
-			JMenu[] menus = {new JMenu(text[36]), new JMenu(text[37]), new JMenu(text[52])};
+			JMenu[] menus = {new JMenu(text[52]), new JMenu(text[62])};
 			JMenuBar menuBar = new JMenuBar();
 			JPanel panel = new JPanel(new GridBagLayout()) {
 			    @Override //set gradient background
@@ -143,24 +148,50 @@ public class App {
 			    }
 			};
 			JMenuItem[] langItems = new JMenuItem[langs.length];
+			JMenuItem[] helpItems = {
+				new JMenuItem(text[37]), new JMenuItem(text[61]), new JMenuItem(text[36])
+			};
 			for (int i=0; i<langs.length; i++) langItems[i] = new JMenuItem(langs[i]);
-			//give menus their own listeners
-			menus[0].addMenuListener(new MenuListener() {
+			//give menu items their own listeners
+			for (int i=0; i<2; i++) {
+				final int index = i;
+				helpItems[i].addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							URI uri = new URI(links[index]);
+							if (isInternetAvailable(uri)) Desktop.getDesktop().browse(uri);
+							else {
+								errorBeep(defToolkit);
+								JOptionPane.showMessageDialog(null, text[44], title, 
+								JOptionPane.WARNING_MESSAGE);
+							}
+						} catch (Exception e1) {e1.printStackTrace();}
+					}
+				});
+			}
+			helpItems[2].addActionListener(new ActionListener() {
 				@Override
-				public void menuSelected(MenuEvent e) {
+				public void actionPerformed(ActionEvent e) {
 					String[] users = {
-						"Bεzzo", "Es", "Kyo MODS", "MetalFrieza3000", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin",
+						"Bεzzo", "BrendaMarzipan", "Es", "Kyo MODS", 
+						"MetalFrieza3000", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin",
 					};
 					String[] links = {
 						"https://bsky.app/profile/did:plc:4hh7ubpzmyq5raktz5sxc6ig",
+						"https://www.youtube.com/@BeeMarzipan",
 						"https://www.youtube.com/channel/UCI6ZwJwlDVam6nUayFB9h7w",
-						"https://www.youtube.com/@kyokomodsbt3", "https://www.youtube.com/@MetalFreezer3000",
-						"https://www.youtube.com/@valen2006", "https://www.youtube.com/@VSVIDEOSOFC",
+						"https://www.youtube.com/@kyokomodsbt3", 
+						"https://www.youtube.com/@MetalFreezer3000", 
+						"https://www.youtube.com/@valen2006", 
+						"https://www.youtube.com/@VSVIDEOSOFC",
 						"https://www.youtube.com/@XenoCarmesin",
 					};
 					String[] desc = new String[users.length];
 					System.arraycopy(text, 38, desc, 0, 5);
-					desc[5] = text[55]; desc[6] = text[56];
+					desc[5] = text[55]; 
+					desc[6] = text[56];
+					desc[7] = text[60];
 					Box mainBox = Box.createVerticalBox();
 					Box[] userBoxes = new Box[users.length];
 					for (int i=0; i<users.length; i++) {
@@ -197,34 +228,7 @@ public class App {
 					JOptionPane.showMessageDialog(null, mainBox, title, 
 					JOptionPane.INFORMATION_MESSAGE, iconSmall);
 				}
-				@Override
-				public void menuDeselected(MenuEvent e) {}
-				@Override
-				public void menuCanceled(MenuEvent e) {}
 			});
-			menus[1].addMenuListener(new MenuListener() {
-				@Override
-				public void menuSelected(MenuEvent e) {
-					String link = "https://github.com/ViveTheModder/dbzs-hyper-patcher/releases";
-					try {
-						URI uri = new URI(link);
-						if (isInternetAvailable(uri)) {
-							Desktop.getDesktop().browse(uri);
-							frame.dispose();
-						}
-						else {
-							errorBeep(defToolkit);
-							JOptionPane.showMessageDialog(null, text[44], title, 
-							JOptionPane.WARNING_MESSAGE);
-						}
-					} catch (Exception e1) {e1.printStackTrace();}
-				}
-				@Override
-				public void menuDeselected(MenuEvent e) {}
-				@Override
-				public void menuCanceled(MenuEvent e) {}
-			});
-			//give menu items their own listeners
 			for (int i=0; i<langs.length; i++) {
 				final int index = i;
 				langItems[i].addActionListener(new ActionListener() {
@@ -261,9 +265,10 @@ public class App {
 			patchBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 22};
-					int index = indexArray[patchBox.getSelectedIndex()];
-					patchBox.setToolTipText("<html>"+text[index].replaceAll("\n", "<br>")
+					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 22};
+					currPatchBoxIdx = patchBox.getSelectedIndex();
+					int index = indexArray[currPatchBoxIdx];
+					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>")
 					+"</html>");
 				}
 			});
@@ -292,8 +297,8 @@ public class App {
 			//add components
 			menuBar.add(menus[0]);
 			menuBar.add(menus[1]);
-			menuBar.add(menus[2]);
-			for (int i=0; i<langs.length; i++) menus[2].add(langItems[i]);
+			for (int i=0; i<langs.length; i++) menus[0].add(langItems[i]);
+			for (int i=0; i<3; i++) menus[1].add(helpItems[i]);
 			panel.add(iconLabel,gbc);
 			panel.add(patchLabel,gbc);
 			panel.add(new JLabel(" "),gbc);

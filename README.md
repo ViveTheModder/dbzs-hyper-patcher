@@ -13,8 +13,10 @@ Either way, it will only work as intended on an **untouched (or already patched)
 | Fix Kaio-ken Goku Face | -fix-goku | Fixes Kaio-ken Goku's 3rd damaged costume's extra faces to point to the right texture. | 29 Sep.
 | Fix JP Buutenks Special Attack SFX | -fix-buutenks | Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign and Super Buu Kamikaze Attack when Japanese voices are selected. | 3 Oct.
 | Fix Krillin Spirit Bomb | -fix-krillin | Fixes the damage of Krillin's Spirit Bomb to be in line with other Spirit Bombs. | 6 Oct.
-| Fix Sim Dragon Random Z-Items | -fix-krillin | Prevents removed Z-Items from showing up in Sim Dragon. | 15 Oct.
-| Fix All | -fix-all | Applies all the patches listed above. | 26 Sep. - 15 Oct.
+| Fix Sim Dragon Random Z-Items | -fix-sim | Prevents removed Z-Items from showing up in Sim Dragon. | 15 Oct.
+| Fix Gohan Blast Combos | -fix-gohan | Fixes the Blast Combos for base Gohan's Dragon Tornado and Burst Meteor. | 22 Oct.
+| Fix Majin Buu Blaster Wave | -fix-buu | Replaces Majin Buu's incorrect Kiai Cannon with the intended Blaster Wave. | 22 Oct.
+| Fix All | -fix-all | Applies all the patches listed above. | 26 Sep. - 22 Oct.
 
 # How to Use
 ## Command-line
