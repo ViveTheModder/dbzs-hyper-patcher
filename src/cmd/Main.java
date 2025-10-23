@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
+import javax.swing.JTextArea;
 import gui.App;
 
 public class Main {
@@ -22,8 +25,8 @@ public class Main {
 		};
 		return false;
 	}
-	public static void applyPatch(RandomAccessFile iso, String patchArg, String[] patchArgs,
-	String[] text) throws IOException {
+	public static boolean applyPatch(RandomAccessFile iso, String patchArg, String[] patchArgs,
+	String[] text, boolean print, JTextArea ta) throws IOException {
 		int patchCnt = 0;
 		boolean[] patchBools = {
 			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
@@ -32,6 +35,7 @@ public class Main {
 			patchArg.equals("-fix-krillin"), patchArg.equals("-fix-sim"),
 			patchArg.equals("-fix-gohan"), patchArg.equals("-fix-buu")
 		};
+		String result;
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
 			for (int i=0; i<patchBools.length; i++) patchBools[i] = true;
@@ -42,11 +46,15 @@ public class Main {
 		if (patchBools[0]) {
 			//Sim Dragon patch
 			writePatchFile(iso, 491374592, 3488160, "Sim_Dragon_US.cpak");
-			System.out.println(text[48] + text[1] + text[50]);
+			result = text[48] + text[1] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 			//Dragon History patch
 			iso.seek(497837637);
 			iso.write(14); //fix Goku costume offset to point to Costume 2 rather than invalid float
-			System.out.println(text[48] + text[2] + text[50]);
+			result = text[48] + text[2] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 			//Great Ape detransformation patch
 			int[] addrs = {
 				614007579, 614529563, 615053467, 615527195, 
@@ -56,7 +64,9 @@ public class Main {
 				iso.seek(addrs[i]);
 				iso.write(0xFF); //disable detransformation
 			}
-			System.out.println(text[48] + text[3] + text[50]);
+			result = text[48] + text[3] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 			//Raditz patch (invalid blink texture index would lead to a crash on console, not PCSX2)
 			int[] pos = {912004428, 912004436};
 			int[] texIdx = {8, 0}; //blink texture index first, then scouter texture index (absent)
@@ -64,7 +74,15 @@ public class Main {
 				iso.seek(pos[i]);
 				iso.write(texIdx[i]);
 			}
-			System.out.println(text[48] + text[51] + text[50]);
+			result = text[48] + text[51] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
+			//Spirit Bomb patch (corrects offset for the fire animation's EQUIPMENT01 bone)
+			iso.seek(556445627);
+			iso.write(66);
+			result = text[48] + text[66] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		} 
 		if (patchBools[1]) {
 			int[] pakPos = {489539584, 489949184}, pakSizes = {408560, 579040};
@@ -89,7 +107,9 @@ public class Main {
 				if (txtPakIds[i] < 10) start+="0";
 				writePatchFile(iso, txtPakPos[i], txtPakSizes[i], start + txtPakIds[i] + ".pak");
 			}
-			System.out.println(text[48] + text[4] + text[50]);
+			result = text[48] + text[4] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[2]) {
 			//addresses to each SS2 Vegeta PAK's "021_voice_speaker.dat" file (pointing at Super 13)
@@ -102,7 +122,9 @@ public class Main {
 				iso.write(0); //mistakenly set to FF, now corrected to 0 (disabled)
 				iso.write(0xFF); //mistakenly set to 0, now corrected to FF (disabled)
 			}
-			System.out.println(text[48] + text[5] + text[50]);
+			result = text[48] + text[5] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[3]) {
 			//addresses to Pikkon's PAKs' halo model part IDs (0x71 is changed to 0x6F)
@@ -111,7 +133,9 @@ public class Main {
 				iso.seek(addrs[i]);
 				iso.write(0x6F);
 			}
-			System.out.println(text[48] + text[6] + text[50]);
+			result = text[48] + text[6] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[4]) {
 			byte[] texId = new byte[6],
@@ -132,11 +156,15 @@ public class Main {
 					iso.write(mouthTexId);
 				}
 			}
-			System.out.println(text[48] + text[7] + text[50]);
+			result = text[48] + text[7] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[5]) {
 			writePatchFile(iso, 1293348864, 338624, "Buu_A_Voice_JP.pak");
-			System.out.println(text[48] + text[8] + text[50]);
+			result = text[48] + text[8] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[6]) {
 			byte[] dmgBytes = {-122, 106}, blockedDmgBytes = {-12, 31};
@@ -153,7 +181,9 @@ public class Main {
 				iso.seek(addrs[i] + 380); //go to blocked Ultimate Blast damage address
 				iso.write(blockedDmgBytes);
 			}
-			System.out.println(text[48] + text[9] + text[50]);
+			result = text[48] + text[9] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[7]) {
 			int[] addrs = {3290552, 3290676, 3290680, 3290684};
@@ -162,7 +192,9 @@ public class Main {
 				iso.seek(addrs[i]);
 				iso.write(itemIds[i]);
 			}
-			System.out.println(text[48] + text[1] + text[50]);
+			result = text[48] + text[1] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[8]) {
 			int[] addrs = {
@@ -173,7 +205,9 @@ public class Main {
 				iso.seek(addrs[i]);
 				for (int j=0; j<8; j++) iso.write(3); //set to 1st Blast 2 (with teleport)
 			}
-			System.out.println(text[48] + text[57] + text[50]);
+			result = text[48] + text[57] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[9]) {
 			int[] addrs = {1066472262, 1067047750, 1067627334, 1068202822};
@@ -181,11 +215,25 @@ public class Main {
 				iso.seek(addrs[i]);
 				iso.write(2); //set 3rd Rushing Technique to Blaster Wave (as it should be)
 			}
-			System.out.println(text[48] + text[63] + text[50]);
+			result = text[48] + text[63] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		//only write changes to ISO if at least one patch argument is valid
-		if (patchCnt > 0) iso.close();
-		else System.out.println(text[49] + text[10]);
+		if (patchCnt > 0) {
+			iso.close();
+			//there is no method to check if the ISO is closed, so I went from void to boolean
+			return true;
+		}
+		else {
+			System.out.println(text[49] + text[10]);
+			return false;
+		}
+	}
+	public static String getPatchDateTime() {
+		LocalDateTime ldt = LocalDateTime.now();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS");
+		return ldt.format(dtf);
 	}
 	public static void writePatchFile(RandomAccessFile iso, int pos, int fileSize, String fileName)
 	throws IOException {
@@ -199,10 +247,10 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		try {
-			int[] patchDescIdx = {54, 58, 63, 22};
+			int[] patchDescIdx = {54, 58, 64, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v1.9";
+			String lang = loc.getLanguage(), version = "v2.0";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
 				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 
@@ -222,7 +270,7 @@ public class Main {
 						RandomAccessFile iso = new RandomAccessFile(tmp, "rw");
 						if (isHyperIso(iso)) {
 							long start = System.currentTimeMillis();
-							applyPatch(iso, args[1], patchArgs, text);
+							applyPatch(iso, args[1], patchArgs, text, true, null);
 							long end = System.currentTimeMillis();
 							double time = (end - start) / 1000.0;
 							System.out.printf(text[11].replace("[time]", "" + time));

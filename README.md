@@ -6,7 +6,7 @@ Either way, it will only work as intended on an **untouched (or already patched)
 # List of Patches
 | Patch | Argument | Description | Release |
 | ------ | ------ | ------ | ------ |
-| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), Great Ape detransformation crash (by disabling it for all costumes), and Raditz crash (from his 1st damaged costume; only happens on console). | 26 Sep. - 28 Sep., 9 Oct.
+| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), Great Ape detransformation crash (by disabling it for all costumes), Raditz crash (from his 1st damaged costume; only happens on console),and Goku Spirit Bomb crash (only against Meta-Cooler). | 26 Sep. - 28 Sep., 9 Oct., 23 Oct.
 | Fix Story Mode Typos | -fix-typos | Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences). | 26 Sep.
 | Fix Vegeta Victory Quote | -fix-vegeta | Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13. | 26 Sep.
 | Fix Pikkon Permanent Halo | -fix-pikkon | Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume. | 28 Sep.

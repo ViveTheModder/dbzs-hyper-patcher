@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class TranslatedText {
 	private static final int NUM_LANGS = 3;
-	private static final int NUM_LINES = 66;
+	private static final int NUM_LINES = 71;
 	private static String[] abbrs = new String[NUM_LANGS]; //two-letter abbreviations for each language
 	private String[] langs = new String[NUM_LANGS];
 	private String[] text = new String[NUM_LINES];
@@ -21,6 +21,9 @@ public class TranslatedText {
 	}
 	public String[] getLangs() {
 		return langs;
+	}
+	public String[] getLangs(String lang) throws IOException {
+		return getLangsFromFile(new File("lang/lang_" + lang + ".txt"));
 	}
 	public String[] getText() {
 		return text;
