@@ -315,7 +315,7 @@ public class App {
 						if (res[0]) {
 							errorBeep(toolkit);
 							JOptionPane.showMessageDialog(null, text[70], 
-							text[48].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
+							text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 						}
 						else {
 							if (log[0] == null) 
