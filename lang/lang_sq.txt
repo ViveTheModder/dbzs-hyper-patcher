@@ -1,0 +1,6 @@
+LANGUAGES:
+"Anglisht"
+"Spanjisht (Spanjë)"
+"Italisht"
+"Portugalisht (Brazil)"
+"Shqip"

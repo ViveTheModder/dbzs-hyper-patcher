@@ -3,6 +3,8 @@ A patcher for DBZ Sparking! HYPER that fixes a variety of issues: **crashes, typ
 
 Either way, it will only work as intended on an **untouched (or already patched) copy of DBZ Sparking! HYPER**, which can be found on [its website](https://dbzs-hyper.nekoweb.org/).
 
+As of the 28th of October, this repository has been **archived**, meaning that the patcher has had about **a month of support**. **Thank you all** for using it!
+
 # List of Patches
 | Patch | Argument | Description | Release |
 | ------ | ------ | ------ | ------ |
@@ -16,6 +18,8 @@ Either way, it will only work as intended on an **untouched (or already patched)
 | Fix Sim Dragon Random Z-Items | -fix-sim | Prevents removed Z-Items from showing up in Sim Dragon. | 15 Oct.
 | Fix Gohan Blast Combos | -fix-gohan | Fixes the Blast Combos for base Gohan's Dragon Tornado and Burst Meteor. | 22 Oct.
 | Fix Majin Buu Blaster Wave | -fix-buu | Replaces Majin Buu's incorrect Kiai Cannon with the intended Blaster Wave. | 22 Oct.
+| Unlock All Songs | -fix-bgmlock | Unlocks all the songs in BGM Select without the need of altered savedata. | 28 Oct.
+| Fix Cell Animation in Story Mode | -fix-cell | Restores Cell - Imperfect's Kamehameha animation in Dragon History. | 28 Oct.
 | Fix All | -fix-all | Applies all the patches listed above. | 26 Sep. - 22 Oct.
 
 # How to Use

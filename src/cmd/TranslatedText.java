@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class TranslatedText {
-	private static final int NUM_LANGS = 3;
-	private static final int NUM_LINES = 71;
-	private static String[] abbrs = new String[NUM_LANGS]; //two-letter abbreviations for each language
+	public static final int NUM_LANGS = 5;
+	private static final int NUM_LINES = 79;
+	private static String[] abbrs = new String[NUM_LANGS]; //two-letter abbreviations per language
 	private String[] langs = new String[NUM_LANGS];
 	private String[] text = new String[NUM_LINES];
 	
@@ -30,7 +30,7 @@ public class TranslatedText {
 	}
 	private String[] getTextFromFile(File txt) throws IOException {
 		int lineIdx = 0;
-		Scanner sc = new Scanner(txt);
+		Scanner sc = new Scanner(txt, "UTF-8");
 		String[] text = new String[NUM_LINES];
 		while (sc.hasNextLine() && lineIdx < text.length) {
 			String line = sc.nextLine();
@@ -45,7 +45,7 @@ public class TranslatedText {
 	}
 	private String[] getLangsFromFile(File txt) throws IOException {
 		int lineIdx = 0;
-		Scanner sc = new Scanner(txt);
+		Scanner sc = new Scanner(txt, "UTF-8");
 		String[] langs = new String[NUM_LANGS];
 		while (sc.hasNextLine() && lineIdx < langs.length) {
 			String line = sc.nextLine();

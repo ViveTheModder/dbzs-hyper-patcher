@@ -1,4 +1,6 @@
 LANGUAGES:
 "Inglés"
 "Español (España)"
+"Italiano"
 "Portugués (Brasil)"
+"Albanés"

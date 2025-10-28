@@ -28,13 +28,9 @@ public class Main {
 	public static boolean applyPatch(RandomAccessFile iso, String patchArg, String[] patchArgs,
 	String[] text, boolean print, JTextArea ta) throws IOException {
 		int patchCnt = 0;
-		boolean[] patchBools = {
-			patchArg.equals("-fix-crash"), patchArg.equals("-fix-typos"), 
-			patchArg.equals("-fix-vegeta"), patchArg.equals("-fix-pikkon"),
-			patchArg.equals("-fix-goku"), patchArg.equals("-fix-buutenks"),
-			patchArg.equals("-fix-krillin"), patchArg.equals("-fix-sim"),
-			patchArg.equals("-fix-gohan"), patchArg.equals("-fix-buu")
-		};
+		boolean[] patchBools = new boolean[patchArgs.length - 1];
+		for (int i=0; i<patchBools.length; i++)
+			patchBools[i] = patchArg.equals(patchArgs[i]);
 		String result;
 		//above patch bools are bound to be false if "fix-all" is used, so make all the bools true
 		if (patchArg.equals("-fix-all")) {
@@ -219,6 +215,24 @@ public class Main {
 			if (print) System.out.println(result);
 			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
+		if (patchBools[10]) {
+			int pos = 2076122;
+			byte[] asmInstrFooter = {0, 16}; //convert bnel to unconditional branch
+			iso.seek(pos);
+			iso.write(asmInstrFooter);
+			result = text[48] + text[72];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
+		}
+		if (patchBools[11]) {
+			writePatchFile(iso, 1035132928, 762176, "Cell_0_anm.pak");
+			int pos = 497756724;
+			iso.seek(pos);
+			iso.write(-111); //overwrite animation ID from 0x0601 to 0x9101 (401 in decimal)
+			result = text[48] + text[75] + text[50];
+			if (print) System.out.println(result);
+			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
+		}
 		//only write changes to ISO if at least one patch argument is valid
 		if (patchCnt > 0) {
 			iso.close();
@@ -247,14 +261,14 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		try {
-			int[] patchDescIdx = {54, 58, 64, 22};
+			int[] patchDescIdx = {54, 58, 64, 73, 76, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v2.0";
+			String lang = loc.getLanguage(), version = "v2.1";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
 				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 
-				"-fix-gohan", "-fix-buu", "-fix-all"
+				"-fix-gohan", "-fix-buu", "-fix-bgmlock", "-fix-cell", "-fix-all"
 			};
 			TranslatedText tt = new TranslatedText(lang);
 			//terminal-only code
@@ -262,7 +276,7 @@ public class Main {
 				String[] text = tt.getText();
 				String[] patchDesc = new String[patchArgs.length];
 				System.arraycopy(text, 15, patchDesc, 0, 7);
-				for (int i=7; i<11; i++) patchDesc[i] = text[patchDescIdx[i-7]];
+				for (int i=7; i<13; i++) patchDesc[i] = text[patchDescIdx[i-7]];
 				if (args.length > 1) {
 					File tmp = new File(args[0].replace("\"", ""));
 					String tmpName = tmp.getName();
@@ -283,7 +297,7 @@ public class Main {
 						System.out.println("=== " + text[0] + " " + version + " ===\n" +
 							text[13] + "\n--- " + text[14] + "---");
 						for (int i=0; i<patchArgs.length; i++)
-							System.out.println(patchArgs[i] + ": " + patchDesc[i]);
+							System.out.println(patchArgs[i] + ":\n" + patchDesc[i]);
 					}
 				}
 			} else App.setApp(patchArgs, version, tt);

@@ -54,10 +54,10 @@ public class App {
 			return false;
 		}
 	}
-	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, String title, Toolkit tk)
+	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, Toolkit tk)
 	throws IOException {
 		RandomAccessFile iso = null;
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23]+" (*.ISO)", "iso");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23] + " (*.ISO)", "iso");
 		chooser.addChoosableFileFilter(filter);
 		chooser.setAcceptAllFileFilterUsed(false);
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -70,7 +70,7 @@ public class App {
 				if (!Main.isHyperIso(iso)) {
 					iso = null;
 					errorBeep(tk);
-					JOptionPane.showMessageDialog(chooser, text[25], title, 
+					JOptionPane.showMessageDialog(chooser, text[25], text[49].replace(": ", ""), 
 					JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -81,23 +81,23 @@ public class App {
 	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
 	JMenu[] menus, String[] langs, String abbr, String ver, TranslatedText tt, int selIndex) 
 	throws IOException {
-		String[] patchTypes = new String[11];
+		String[] patchTypes = new String[13];
 		String[] translatedLangs = tt.getLangs(abbr);
 		System.arraycopy(text, 26, patchTypes, 0, 7);
-		int[] patchIdx = {53, 59, 65, 33};
-		for (int i=7; i<11; i++) patchTypes[i] = text[patchIdx[i-7]];
+		int[] patchIdx = {53, 59, 65, 74, 77, 33};
+		for (int i=7; i<patchTypes.length; i++) patchTypes[i] = text[patchIdx[i-7]];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
 		cb.setSelectedIndex(selIndex); //preserve currently selected index
 		cb.setToolTipText(null); //disable tooltip until a patch type is selected
 		pb.setText(text[34]);
+		pb.setToolTipText(text[45]);
 		pl.setText(text[35]);
 		int[] menuIdx = {67, 52, 62}, helpItemIdx = {37, 61, 36};
 		menus[0].getItem(0).setText(text[68]);
 		for (int i=0; i<menus.length; i++) menus[i].setText(text[menuIdx[i]]);
-		for (int i=0; i<3; i++) {
+		for (int i=0; i<3; i++)	menus[2].getItem(i).setText(text[helpItemIdx[i]]);
+		for (int i=0; i<TranslatedText.NUM_LANGS; i++)
 			menus[1].getItem(i).setText(translatedLangs[i]);
-			menus[2].getItem(i).setText(text[helpItemIdx[i]]);
-		}
 		f.setTitle(text[0]+" "+ver);
 	}
 	static void errorBeep(Toolkit toolkit) {
@@ -113,7 +113,7 @@ public class App {
 			final Log[] log = new Log[1];
 			final RandomAccessFile[] currIso = new RandomAccessFile[1];
 			//look, it was either this, or passing the text array from Main as a param
-			int[] patchDescIdx = {54, 58, 64, 22}, patchTypeIdx = {53, 59, 65, 33};
+			int[] patchDescIdx = {54, 58, 64, 73, 76, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 33};
 			text = tt.getText();
 			String[] langs = tt.getLangs();
 			String[] links = {
@@ -123,7 +123,7 @@ public class App {
 			String[] patchTypes = new String[args.length];
 			System.arraycopy(text, 15, patchDesc, 0, 7);
 			System.arraycopy(text, 26, patchTypes, 0, 7);
-			for (int i=7; i<11; i++) {
+			for (int i=7; i<13; i++) {
 				patchDesc[i] = text[patchDescIdx[i-7]];
 				patchTypes[i] = text[patchTypeIdx[i-7]];
 			}
@@ -170,7 +170,7 @@ public class App {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						RandomAccessFile iso = getIsoFromChooser(chooser, title, toolkit);
+						RandomAccessFile iso = getIsoFromChooser(chooser, toolkit);
 						if (iso != null) 
 							frame.setTitle(title + " - " + chooser.getSelectedFile().getName());
 						else frame.setTitle(title);
@@ -186,11 +186,13 @@ public class App {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try {
+							int textIdx = 44;
+							if (index == 1) textIdx = 43;
 							URI uri = new URI(links[index]);
 							if (isInternetAvailable(uri)) Desktop.getDesktop().browse(uri);
 							else {
 								errorBeep(toolkit);
-								JOptionPane.showMessageDialog(null, text[44], title, 
+								JOptionPane.showMessageDialog(null, text[textIdx], text[71], 
 								JOptionPane.WARNING_MESSAGE);
 							}
 						} catch (Exception e1) {e1.printStackTrace();}
@@ -201,8 +203,8 @@ public class App {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String[] users = {
-						"Bεzzo", "BrendaMarzipan", "Es", "Kyo MODS", 
-						"MetalFrieza3000", "Valen2006", "VSVIDEOSFC", "Xeno Carmesin",
+						"Bεzzo", "BrendaMarzipan", "Es", "Kyo MODS", "MetalFrieza3000",
+						"Valen2006", "VSVIDEOSFC", "Xeno Carmesin", "Parmi"
 					};
 					String[] links = {
 						"https://bsky.app/profile/did:plc:4hh7ubpzmyq5raktz5sxc6ig",
@@ -216,8 +218,8 @@ public class App {
 					};
 					String[] desc = new String[users.length];
 					System.arraycopy(text, 38, desc, 0, 5);
-					int[] userDescIdx = {55, 56, 60};
-					for (int i=5; i<8; i++) desc[i] = text[userDescIdx[i-5]];
+					int[] userDescIdx = {55, 56, 60, 78};
+					for (int i=5; i<9; i++) desc[i] = text[userDescIdx[i-5]];
 					Box mainBox = Box.createVerticalBox();
 					Box[] userBoxes = new Box[users.length];
 					for (int i=0; i<users.length; i++) {
@@ -226,21 +228,25 @@ public class App {
 						JLabel descLabel = new JLabel(" " + desc[i]);
 						descLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 						userLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-						userLabel.setForeground(new Color(0x74,0x31,0xdd));
-						userLabel.addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								try {
-									URI uri = new URI(links[index]);
-									if (isInternetAvailable(uri)) Desktop.getDesktop().browse(uri);
-									else {
-										errorBeep(toolkit);
-										JOptionPane.showMessageDialog(null, text[43], title, 
-										JOptionPane.WARNING_MESSAGE);
-									}
-								} catch (Exception e1) {e1.printStackTrace();}
-							}
-						});
+						if (i != links.length) {
+							userLabel.setForeground(new Color(0x74, 0x31, 0xdd));
+							userLabel.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									try {
+										URI uri = new URI(links[index]);
+										if (isInternetAvailable(uri)) 
+											Desktop.getDesktop().browse(uri);
+										else {
+											errorBeep(toolkit);
+											JOptionPane.showMessageDialog(null, text[43], text[71], 
+											JOptionPane.WARNING_MESSAGE);
+										}
+									} catch (Exception e1) {e1.printStackTrace();}
+								}
+							});
+						}
+						else userLabel.setForeground(new Color(0xdd, 0x31, 0x74));
 						userBoxes[i] = Box.createHorizontalBox();
 						userBoxes[i].add(userLabel);
 						userBoxes[i].add(descLabel);
@@ -248,7 +254,7 @@ public class App {
 					}
 					ImageIcon iconSmall = new ImageIcon(img.getScaledInstance(256, 128,
 					Image.SCALE_SMOOTH));
-					JOptionPane.showMessageDialog(null, mainBox, title, 
+					JOptionPane.showMessageDialog(null, mainBox, text[36], 
 					JOptionPane.INFORMATION_MESSAGE, iconSmall);
 				}
 			});
@@ -292,7 +298,7 @@ public class App {
 			patchBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 22};
+					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 22};
 					currPatchBoxIdx[0] = patchBox.getSelectedIndex();
 					int index = indexArray[currPatchBoxIdx[0]];
 					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>")
@@ -308,8 +314,8 @@ public class App {
 						int idx = patchBox.getSelectedIndex();
 						if (res[0]) {
 							errorBeep(toolkit);
-							JOptionPane.showMessageDialog(null, App.text[70], 
-							title, JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, text[70], 
+							text[48].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 						}
 						else {
 							if (log[0] == null) 
@@ -320,7 +326,7 @@ public class App {
 					else {
 						errorBeep(toolkit);
 						JOptionPane.showMessageDialog(null, text[69], 
-						title, JOptionPane.ERROR_MESSAGE);
+						text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			});

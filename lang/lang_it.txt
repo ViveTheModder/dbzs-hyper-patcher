@@ -1,0 +1,6 @@
+LANGUAGES:
+"Inglese"
+"Spagnolo (Spagna)"
+"Italiano"
+"Portoghese (Brasile)"
+"Albanese"
