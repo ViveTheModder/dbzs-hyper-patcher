@@ -200,14 +200,14 @@ public class Main {
 			};
 			int blastComboVal = 3;
 			for (int i=0; i<addrs.length; i++) {
-				iso.seek(addrs[i]);
+				iso.seek(addrs[i] - 1);
 				if (i > 8) blastComboVal = 0;
 				else if (i == 8) {
 					result = text[48] + text[57] + text[50];
 					if (print) System.out.println(result);
 					else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 				}
-				for (int j=0; j<8; j++) iso.write(blastComboVal);
+				for (int j=0; j<9; j++) iso.write(blastComboVal);
 			}
 			result = text[48] + text[79] + text[50];
 			if (print) System.out.println(result);
