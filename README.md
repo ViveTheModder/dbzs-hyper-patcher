@@ -3,7 +3,9 @@ A patcher for DBZ Sparking! HYPER that fixes a variety of issues: **crashes, typ
 
 Either way, it will only work as intended on an **untouched (or already patched) copy of DBZ Sparking! HYPER**, which can be found on [its website](https://dbzs-hyper.nekoweb.org/).
 
-As of the 28th of October, this repository has been **archived**, meaning that the patcher has had about **a month of support**. **Thank you all** for using it!
+~~As of the 28th of October, this repository has been **archived**, meaning that the patcher has had about **a month of support**. **Thank you all** for using it!~~
+
+The repository has been **unarchived** and **will remain this way**. Therefore, there **will not be a final version** of the patcher, but **future support now depends on the fans**/players. If they find a fix, they have to let me know, and depending on the **urgency/importance**, a patch will be included.
 
 # List of Patches
 | Patch | Argument | Description | Release |
@@ -16,7 +18,7 @@ As of the 28th of October, this repository has been **archived**, meaning that t
 | Fix JP Buutenks Special Attack SFX | -fix-buutenks | Fixes the sound effects for Super Buu (Gotenks Absorbed)'s Finish Sign and Super Buu Kamikaze Attack when Japanese voices are selected. | 3 Oct.
 | Fix Krillin Spirit Bomb | -fix-krillin | Fixes the damage of Krillin's Spirit Bomb to be in line with other Spirit Bombs. | 6 Oct.
 | Fix Sim Dragon Random Z-Items | -fix-sim | Prevents removed Z-Items from showing up in Sim Dragon. | 15 Oct.
-| Fix Gohan Blast Combos | -fix-gohan | Fixes the Blast Combos for base Gohan's Dragon Tornado and Burst Meteor. | 22 Oct.
+| Fix Blast Combos | -fix-gohan | Fixes all of Nam's Blast Combos, and the Blast Combos for base Gohan's Dragon Tornado and Burst Meteor. | 22 Oct., 1 Nov.
 | Fix Majin Buu Blaster Wave | -fix-buu | Replaces Majin Buu's incorrect Kiai Cannon with the intended Blaster Wave. | 22 Oct.
 | Unlock All Songs | -fix-bgmlock | Unlocks all the songs in BGM Select without the need of altered savedata. | 28 Oct.
 | Fix Cell Animation in Story Mode | -fix-cell | Restores Cell - Imperfect's Kamehameha animation in Dragon History. | 28 Oct.

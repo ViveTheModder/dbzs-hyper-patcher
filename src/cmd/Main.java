@@ -195,13 +195,21 @@ public class Main {
 		if (patchBools[8]) {
 			int[] addrs = {
 				647025968, 647646864, 648225296, 648879952,
-				649530640, 650149520, 650639312, 651294544, 658068176
+				649530640, 650149520, 650639312, 651294544, 658068176,
+				889711952, 890363216, 891018576, 891669840
 			};
-			for (int i=0; i<9; i++) {
+			int blastComboVal = 3;
+			for (int i=0; i<addrs.length; i++) {
 				iso.seek(addrs[i]);
-				for (int j=0; j<8; j++) iso.write(3); //set to 1st Blast 2 (with teleport)
+				if (i > 8) blastComboVal = 0;
+				else if (i == 8) {
+					result = text[48] + text[57] + text[50];
+					if (print) System.out.println(result);
+					else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
+				}
+				for (int j=0; j<8; j++) iso.write(blastComboVal);
 			}
-			result = text[48] + text[57] + text[50];
+			result = text[48] + text[79] + text[50];
 			if (print) System.out.println(result);
 			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
@@ -264,11 +272,11 @@ public class Main {
 			int[] patchDescIdx = {54, 58, 64, 73, 76, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v2.1";
+			String lang = loc.getLanguage(), version = "v2.2";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
 				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 
-				"-fix-gohan", "-fix-buu", "-fix-bgmlock", "-fix-cell", "-fix-all"
+				"-fix-combos", "-fix-buu", "-fix-bgmlock", "-fix-cell", "-fix-all"
 			};
 			TranslatedText tt = new TranslatedText(lang);
 			//terminal-only code

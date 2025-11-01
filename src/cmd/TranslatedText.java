@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class TranslatedText {
 	public static final int NUM_LANGS = 5;
-	private static final int NUM_LINES = 79;
+	private static final int NUM_LINES = 80;
 	private static String[] abbrs = new String[NUM_LANGS]; //two-letter abbreviations per language
 	private String[] langs = new String[NUM_LANGS];
 	private String[] text = new String[NUM_LINES];
