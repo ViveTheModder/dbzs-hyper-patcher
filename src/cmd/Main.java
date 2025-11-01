@@ -224,10 +224,12 @@ public class Main {
 			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
 		}
 		if (patchBools[10]) {
-			int pos = 2076122;
 			byte[] asmInstrFooter = {0, 16}; //convert bnel to unconditional branch
-			iso.seek(pos);
+			byte[] elfFooter = {12, -28, 13, 38};
+			iso.seek(2076122);
 			iso.write(asmInstrFooter);
+			iso.seek(2746468); //last 4 bytes of the ELF (editing them will fix the CRC)
+			iso.write(elfFooter);
 			result = text[48] + text[72];
 			if (print) System.out.println(result);
 			else ta.setText(ta.getText() + "[" + getPatchDateTime() + "] " + result + "\n");
@@ -272,7 +274,7 @@ public class Main {
 			int[] patchDescIdx = {54, 58, 64, 73, 76, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v2.2";
+			String lang = loc.getLanguage(), version = "v2.2.1";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
 				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 
