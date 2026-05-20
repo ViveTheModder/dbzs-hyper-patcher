@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URI;
@@ -66,7 +67,15 @@ public class App {
 		while (iso == null) {
 			int result = chooser.showOpenDialog(null);
 			if (result == JFileChooser.APPROVE_OPTION) {
-				iso = new RandomAccessFile(chooser.getSelectedFile(), "rw");
+				File currFile = chooser.getSelectedFile();
+				if (!currFile.renameTo(currFile)) {
+					errorBeep(tk);
+					JOptionPane.showMessageDialog(chooser, text[80], text[49].replace(": ", ""), 
+					JOptionPane.ERROR_MESSAGE);
+					return null;
+				}
+				//RAF will throw an exception if file is used by another process
+				iso = new RandomAccessFile(currFile, "rw");
 				if (!Main.isHyperIso(iso)) {
 					iso = null;
 					errorBeep(tk);
@@ -81,10 +90,10 @@ public class App {
 	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
 	JMenu[] menus, String[] langs, String abbr, String ver, TranslatedText tt, int selIndex) 
 	throws IOException {
-		String[] patchTypes = new String[13];
+		String[] patchTypes = new String[15];
 		String[] translatedLangs = tt.getLangs(abbr);
 		System.arraycopy(text, 26, patchTypes, 0, 7);
-		int[] patchIdx = {53, 59, 65, 74, 77, 33};
+		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 33};
 		for (int i=7; i<patchTypes.length; i++) patchTypes[i] = text[patchIdx[i-7]];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
 		cb.setSelectedIndex(selIndex); //preserve currently selected index
@@ -113,7 +122,7 @@ public class App {
 			final Log[] log = new Log[1];
 			final RandomAccessFile[] currIso = new RandomAccessFile[1];
 			//look, it was either this, or passing the text array from Main as a param
-			int[] patchDescIdx = {54, 58, 64, 73, 76, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 33};
+			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 83, 86, 33};
 			text = tt.getText();
 			String[] langs = tt.getLangs();
 			String[] links = {
@@ -123,7 +132,7 @@ public class App {
 			String[] patchTypes = new String[args.length];
 			System.arraycopy(text, 15, patchDesc, 0, 7);
 			System.arraycopy(text, 26, patchTypes, 0, 7);
-			for (int i=7; i<13; i++) {
+			for (int i=7; i<7+patchTypeIdx.length; i++) {
 				patchDesc[i] = text[patchDescIdx[i-7]];
 				patchTypes[i] = text[patchTypeIdx[i-7]];
 			}
@@ -298,7 +307,7 @@ public class App {
 			patchBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 22};
+					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 82, 85, 22};
 					currPatchBoxIdx[0] = patchBox.getSelectedIndex();
 					int index = indexArray[currPatchBoxIdx[0]];
 					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>")
