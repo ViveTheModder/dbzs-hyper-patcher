@@ -94,3 +94,7 @@ EXTRA:
 "Majuub and Meta-Cooler's Skill Lists are "
 "Fixes the costs for Majuub's Brutal Buster[br]and Meta-Cooler's Lock-On Buster."
 "Fix Skill Lists"
+"Super Buu (base & Gotenks Absorbed) and Android #17 are "
+"Re-enables the transformation bonus that repairs[br]Super Buu, Super Buu - Gotenks Absorbed and Super Android #17's costumes."
+"Restore Costume Repair"
+"Ultimate Decisive Battle is "

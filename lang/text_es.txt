@@ -94,3 +94,7 @@ EXTRA:
 "Las listas de habilidades de Majuub y Metal Cooler son "
 "Se corrigen los costes del Barrera Brutal de Majuub[br]y del Destrozo fijación blanco de Metal Cooler."
 "Arreglar las Listas de Habilidades"
+"Super Buu (base y Gotenks absorbido) y Androide n°17 son "
+"Restaura la bonus de transformación que repara[br]los trajes de Súper Buu, Súper Bu - Gotenks absorbido y el Súper Androide n°17."
+"Arreglar Reparación de Trajes"
+"Batalla final decisiva está "

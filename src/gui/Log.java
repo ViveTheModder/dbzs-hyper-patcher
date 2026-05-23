@@ -17,12 +17,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
-import cmd.Main;
+import cmd.Patch;
 
 public class Log {
 	private JTextArea textArea;	
-	public Log(JFrame frame, Image img, RandomAccessFile[] iso, String title, 
-	String[] args, Toolkit tk, int idx, boolean[] res) {
+	public Log(JFrame frame, Image img, RandomAccessFile[] iso, String title, String[] args, Toolkit tk, int idx, boolean[] res) {
 		//initialize components
 		Box scrollBox = Box.createHorizontalBox();
 		Font tahoma = new Font("Tahoma", Font.PLAIN, 20);
@@ -73,9 +72,9 @@ public class Log {
 			protected Void doInBackground() throws Exception {
 				textArea.setText("");
 				long start = System.currentTimeMillis();
-				res[0] = Main.applyPatch(iso[0], args[idx], args, App.text, false, textArea);
+				res[0] = Patch.apply(iso[0], args[idx], args, App.text, false, textArea);
 				long end = System.currentTimeMillis();
-				double time = (end-start)/1000.0;
+				double time = (end - start) / 1000.0;
 				if (res[0]) {
 					tk.beep();
 					JOptionPane.showMessageDialog(null, App.text[46].replace("[time]", ""+time), 

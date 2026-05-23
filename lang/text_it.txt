@@ -94,3 +94,7 @@ EXTRA:
 "Le liste delle abilità di Majub e Meta Cooler sono "
 "Correzione dei costi del Barriera Brutale di Majub[br]e del Distruttore Blocco di Meta Cooler."
 "Risolvi Liste delle Abilità"
+"Super Bu (forma base & Dopo assorb. Gotenks) e Androide N° 17 sono "
+"Riattiva il bonus di trasformazione che ripara[br]i costumi di Super Bu, Super Bu - Dopo assorb. Gotenks e Super Androide N° 17."
+"Risolvi Riparazione di Costumi"
+"Battaglia Suprema decisiva è "

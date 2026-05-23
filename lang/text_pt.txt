@@ -94,3 +94,7 @@ EXTRA:
 "As listas de habilidades de Majuub e Meta-Cooler são"
 "Corrige dos custos do Brutal Buster de Majuub[br]e do Lock-On Buster de Meta-Cooler.”
 "Corrigir das Listas de Habilidades"
+"Super Buu (base & Gotenks Absorbed) e Android #17 são "
+"Reativa o bônus de transformação que repara[br]as trajes do Super Buu, do Super Buu - Gotenks Absorbed e do Super Android #17."
+"Restaurar Réparo de Trajes"
+"Ultimate Decisive Battle está "

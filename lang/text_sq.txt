@@ -94,3 +94,7 @@ EXTRA:
 "Listat e Aftësive të Majuub-it dhe Meta-Cooler-it janë  "
 "Rregullon kostot e listuara për Brutal Buster-in e Majuub-it[br]dhe Lock-On Buster-in e Meta-Cooler-it."
 "Rregulloni Listat e Aftësive"
+"Super Bu (forma bazë & Gotenks Absorbed) dhe Androidi #17 janë "
+"Riaktivizon bonusin e transformimit që rregullon kostumet e[br]Super Bu-së, Super Buu - Gotenks Absorbed dhe Super Androidit #17."
+"Riktheni Riparimin e Kostumeve"
+"Ultimate Decisive Battle është "

@@ -90,11 +90,11 @@ public class App {
 	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
 	JMenu[] menus, String[] langs, String abbr, String ver, TranslatedText tt, int selIndex) 
 	throws IOException {
-		String[] patchTypes = new String[15];
+		String[] patchTypes = new String[16];
 		String[] translatedLangs = tt.getLangs(abbr);
 		System.arraycopy(text, 26, patchTypes, 0, 7);
-		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 33};
-		for (int i=7; i<patchTypes.length; i++) patchTypes[i] = text[patchIdx[i-7]];
+		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 89, 33};
+		for (int i = 7; i < patchTypes.length; i++) patchTypes[i] = text[patchIdx[i-7]];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
 		cb.setSelectedIndex(selIndex); //preserve currently selected index
 		cb.setToolTipText(null); //disable tooltip until a patch type is selected
@@ -103,9 +103,9 @@ public class App {
 		pl.setText(text[35]);
 		int[] menuIdx = {67, 52, 62}, helpItemIdx = {37, 61, 36};
 		menus[0].getItem(0).setText(text[68]);
-		for (int i=0; i<menus.length; i++) menus[i].setText(text[menuIdx[i]]);
-		for (int i=0; i<3; i++)	menus[2].getItem(i).setText(text[helpItemIdx[i]]);
-		for (int i=0; i<TranslatedText.NUM_LANGS; i++)
+		for (int i = 0; i < menus.length; i++) menus[i].setText(text[menuIdx[i]]);
+		for (int i = 0; i < 3; i++)	menus[2].getItem(i).setText(text[helpItemIdx[i]]);
+		for (int i = 0; i < TranslatedText.NUM_LANGS; i++)
 			menus[1].getItem(i).setText(translatedLangs[i]);
 		f.setTitle(text[0]+" "+ver);
 	}
@@ -122,7 +122,7 @@ public class App {
 			final Log[] log = new Log[1];
 			final RandomAccessFile[] currIso = new RandomAccessFile[1];
 			//look, it was either this, or passing the text array from Main as a param
-			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 83, 86, 33};
+			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 88, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 83, 86, 89, 33};
 			text = tt.getText();
 			String[] langs = tt.getLangs();
 			String[] links = {
@@ -132,7 +132,7 @@ public class App {
 			String[] patchTypes = new String[args.length];
 			System.arraycopy(text, 15, patchDesc, 0, 7);
 			System.arraycopy(text, 26, patchTypes, 0, 7);
-			for (int i=7; i<7+patchTypeIdx.length; i++) {
+			for (int i = 7; i < 7 + patchTypeIdx.length; i++) {
 				patchDesc[i] = text[patchDescIdx[i-7]];
 				patchTypes[i] = text[patchTypeIdx[i-7]];
 			}
@@ -152,7 +152,7 @@ public class App {
 			JFileChooser chooser = new JFileChooser();
 			JLabel iconLabel = new JLabel(""), patchLbl = new JLabel(text[35]);
 			JMenu[] menus = {
-					new JMenu(text[67]), new JMenu(text[52]), new JMenu(text[62])
+				new JMenu(text[67]), new JMenu(text[52]), new JMenu(text[62])
 			};
 			JMenuBar menuBar = new JMenuBar();
 			JPanel panel = new JPanel(new GridBagLayout()) {
@@ -173,7 +173,7 @@ public class App {
 			JMenuItem[] helpItems = {
 				new JMenuItem(text[37]), new JMenuItem(text[61]), new JMenuItem(text[36])
 			};
-			for (int i=0; i<langs.length; i++) langItems[i] = new JMenuItem(langs[i]);
+			for (int i = 0; i < langs.length; i++) langItems[i] = new JMenuItem(langs[i]);
 			//give menu items their own listeners
 			fileItem.addActionListener(new ActionListener() {
 				@Override
@@ -189,7 +189,7 @@ public class App {
 					} catch (IOException ex) {ex.printStackTrace();} 
 				}
 			});
-			for (int i=0; i<2; i++) {
+			for (int i = 0; i < 2; i++) {
 				final int index = i;
 				helpItems[i].addActionListener(new ActionListener() {
 					@Override
@@ -228,10 +228,10 @@ public class App {
 					String[] desc = new String[users.length];
 					System.arraycopy(text, 38, desc, 0, 5);
 					int[] userDescIdx = {55, 56, 60, 78};
-					for (int i=5; i<9; i++) desc[i] = text[userDescIdx[i-5]];
+					for (int i = 5; i < 9; i++) desc[i] = text[userDescIdx[i-5]];
 					Box mainBox = Box.createVerticalBox();
 					Box[] userBoxes = new Box[users.length];
-					for (int i=0; i<users.length; i++) {
+					for (int i = 0; i < users.length; i++) {
 						final int index = i;
 						JLabel userLabel = new JLabel(users[i]);
 						JLabel descLabel = new JLabel(" " + desc[i]);
@@ -267,7 +267,7 @@ public class App {
 					JOptionPane.INFORMATION_MESSAGE, iconSmall);
 				}
 			});
-			for (int i=0; i<langs.length; i++) {
+			for (int i = 0; i < langs.length; i++) {
 				final int index = i;
 				langItems[i].addActionListener(new ActionListener() {
 					@Override
@@ -277,8 +277,7 @@ public class App {
 							TranslatedText ttNew = new TranslatedText(abbrs[index]);
 							String[] newText = ttNew.getText();
 							text = newText;
-							changeLanguage(patchBox, patch, frame, patchLbl, 
-							menus, langs, abbrs[index], ver, ttNew, currPatchBoxIdx[0]);
+							changeLanguage(patchBox, patch, frame, patchLbl, menus, langs, abbrs[index], ver, ttNew, currPatchBoxIdx[0]);
 						} catch (IOException ex) {ex.printStackTrace();}
 					}
 				});
@@ -307,7 +306,7 @@ public class App {
 			patchBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 82, 85, 22};
+					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 82, 85, 88, 22};
 					currPatchBoxIdx[0] = patchBox.getSelectedIndex();
 					int index = indexArray[currPatchBoxIdx[0]];
 					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>")
@@ -341,11 +340,11 @@ public class App {
 			});
 			//add components
 			menus[0].add(fileItem);
-			for (int i=0; i<3; i++) {
+			for (int i = 0; i < 3; i++) {
 				menuBar.add(menus[i]);
 				menus[2].add(helpItems[i]);
 			}
-			for (int i=0; i<langs.length; i++) menus[1].add(langItems[i]);
+			for (int i = 0; i < langs.length; i++) menus[1].add(langItems[i]);
 			panel.add(iconLabel,gbc);
 			panel.add(patchLbl,gbc);
 			panel.add(new JLabel(" "),gbc);

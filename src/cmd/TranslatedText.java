@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class TranslatedText {
 	public static final int NUM_LANGS = 5;
-	private static final int NUM_LINES = 87;
+	private static final int NUM_LINES = 91;
 	private static String[] abbrs = new String[NUM_LANGS]; //two-letter abbreviations per language
 	private String[] langs = new String[NUM_LANGS];
 	private String[] text = new String[NUM_LINES];
@@ -16,7 +16,7 @@ public class TranslatedText {
 		File[] langFiles = new File("lang/").listFiles(
 			(dir, name) -> (name.startsWith("lang") && name.endsWith(".txt"))
 		);
-		for (int i=0; i<NUM_LANGS; i++) abbrs[i] = langFiles[i].getName().substring(5, 7);
+		for (int i = 0; i < NUM_LANGS; i++) abbrs[i] = langFiles[i].getName().substring(5, 7);
 		return abbrs;
 	}
 	public String[] getLangs() {
@@ -68,14 +68,13 @@ public class TranslatedText {
 				(dir, name) -> (name.startsWith("text") && name.endsWith(".txt"))
 			);
 			//binary search is used in case more languages are added in the future...
-			int lang_en_idx = Arrays.binarySearch(langFiles, new File(langFolder.toString() +
-			"/lang_en.txt"));
+			int lang_en_idx = Arrays.binarySearch(langFiles, new File(langFolder.toString() + "/lang_en.txt"));
 			for (int i=0; i<langFiles.length; i++) {
 				if (langFiles[i].getName().endsWith(lang + ".txt")) {
 					langs = getLangsFromFile(langFiles[i]);
 					break;
 				}
-				 //set to lang_en.txt if language from locale is not supported
+				//set to lang_en.txt if language from locale is not supported
 				else langs = getLangsFromFile(langFiles[lang_en_idx]);
 			}
 			for (File txt: txtFiles) {
@@ -86,6 +85,8 @@ public class TranslatedText {
 				//set to text_en.txt if language from locale is not supported
 				else text = getTextFromFile(txtFiles[lang_en_idx]);
 			}
-		} catch (IOException e) {e.printStackTrace();}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
