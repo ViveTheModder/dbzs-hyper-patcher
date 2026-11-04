@@ -98,3 +98,6 @@ EXTRA:
 "Restaura la bonus de transformación que repara[br]los trajes de Súper Buu, Súper Bu - Gotenks absorbido y el Súper Androide n°17."
 "Arreglar Reparación de Trajes"
 "Batalla final decisiva está "
+"Arreglar Sombras después Destransformaciónes"
+"Cambia el codigo del juego para desactivar sombras estáticas después destransformaciónes."
+"El codigo del juego está "

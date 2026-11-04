@@ -98,3 +98,6 @@ EXTRA:
 "Re-enables the transformation bonus that repairs[br]Super Buu, Super Buu - Gotenks Absorbed and Super Android #17's costumes."
 "Restore Costume Repair"
 "Ultimate Decisive Battle is "
+"Fix Shaders After Detransformation"
+"Edits the game's code to disable static shaders after a detransformation."
+"The game's code is "

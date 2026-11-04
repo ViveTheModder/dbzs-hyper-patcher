@@ -98,3 +98,6 @@ EXTRA:
 "Riattiva il bonus di trasformazione che ripara[br]i costumi di Super Bu, Super Bu - Dopo assorb. Gotenks e Super Androide N° 17."
 "Risolvi Riparazione di Costumi"
 "Battaglia Suprema decisiva è "
+"Risolvi Ombre Dopo Detrasformazioni"
+"Cambia il codige di gioco per disattivare le ombre statische dopo le detransformazioni."
+"Il codige di gioco è "

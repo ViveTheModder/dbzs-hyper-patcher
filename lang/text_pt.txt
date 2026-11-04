@@ -98,3 +98,6 @@ EXTRA:
 "Reativa o bônus de transformação que repara[br]as trajes do Super Buu, do Super Buu - Gotenks Absorbed e do Super Android #17."
 "Restaurar Réparo de Trajes"
 "Ultimate Decisive Battle está "
+"Corrigir Sombras Após Destransformações"
+"Altera o código do jogo para desativar sombras estáticas após as destransformações."
+"O código do jogo está "

@@ -256,6 +256,15 @@ public class Patch {
 			result = text[48] + text[87] + text[50];
 			Main.displayResult(result, ta, print);
 		}
+		if (patchBools[15]) {
+			byte[] asmInstrBytes = { 0x2D, 0x20, 0x20, 2, 0x2D, 0x30, 0, 0, 0x3A, 0x40, 9, 0x0C };
+			byte[] nopBytes = new byte[20];
+			iso.seek(1492672);
+			iso.write(asmInstrBytes);
+			iso.write(nopBytes);
+			result = text[48] + text[93] + text[50];
+			Main.displayResult(result, ta, print);
+		}
 		//only write changes to ISO if at least one patch argument is valid
 		if (patchCnt > 0) {
 			iso.close();

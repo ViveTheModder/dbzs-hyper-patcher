@@ -98,3 +98,6 @@ EXTRA:
 "Riaktivizon bonusin e transformimit që rregullon kostumet e[br]Super Bu-së, Super Buu - Gotenks Absorbed dhe Super Androidit #17."
 "Riktheni Riparimin e Kostumeve"
 "Ultimate Decisive Battle është "
+"Rregulloni Dritëhijen pas Detransformimeve"
+"Ndryshon kodin e lojës që të çaktivizojë dritëhijen statike pas një detransformimi."
+"Kodi i lojës është "

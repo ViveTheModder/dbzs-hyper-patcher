@@ -32,15 +32,15 @@ public class Main {
 	}
 	public static void main(String[] args) {
 		try {
-			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 88, 22};
+			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 88, 92, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v2.4";
+			String lang = loc.getLanguage(), version = "v2.5";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
 				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 
 				"-fix-combos", "-fix-buu", "-fix-bgmlock", "-fix-cell", 
-				"-fix-story", "-fix-skills", "-fix-absorb", "-fix-all"
+				"-fix-story", "-fix-skills", "-fix-absorb", "-fix-shader", "-fix-all"
 			};
 			TranslatedText tt = new TranslatedText(lang);
 			//terminal-only code
@@ -48,7 +48,7 @@ public class Main {
 				String[] text = tt.getText();
 				String[] patchDesc = new String[patchArgs.length];
 				System.arraycopy(text, 15, patchDesc, 0, 7);
-				for (int i = 7; i < patchDesc.length; i++) patchDesc[i] = text[patchDescIdx[i-7]];
+				for (int i = 7; i < patchDesc.length; i++) patchDesc[i] = text[patchDescIdx[i - 7]];
 				if (args.length > 1) {
 					File tmp = new File(args[0].replace("\"", ""));
 					String tmpName = tmp.getName();

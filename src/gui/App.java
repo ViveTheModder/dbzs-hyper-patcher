@@ -1,6 +1,7 @@
 package gui;
 //DBZ Sparking! HYPER Patcher by ViveTheJoestar
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -55,7 +56,7 @@ public class App {
 			return false;
 		}
 	}
-	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, Toolkit tk)
+	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, JFrame frame, Toolkit tk)
 	throws IOException {
 		RandomAccessFile iso = null;
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23] + " (*.ISO)", "iso");
@@ -65,7 +66,7 @@ public class App {
 		chooser.setFileFilter(filter);
 		chooser.setDialogTitle(text[24]);
 		while (iso == null) {
-			int result = chooser.showOpenDialog(null);
+			int result = chooser.showOpenDialog(frame);
 			if (result == JFileChooser.APPROVE_OPTION) {
 				File currFile = chooser.getSelectedFile();
 				if (!currFile.renameTo(currFile)) {
@@ -93,11 +94,10 @@ public class App {
 		String[] patchTypes = new String[16];
 		String[] translatedLangs = tt.getLangs(abbr);
 		System.arraycopy(text, 26, patchTypes, 0, 7);
-		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 89, 33};
+		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 89, 91, 33};
 		for (int i = 7; i < patchTypes.length; i++) patchTypes[i] = text[patchIdx[i-7]];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
 		cb.setSelectedIndex(selIndex); //preserve currently selected index
-		cb.setToolTipText(null); //disable tooltip until a patch type is selected
 		pb.setText(text[34]);
 		pb.setToolTipText(text[45]);
 		pl.setText(text[35]);
@@ -111,7 +111,7 @@ public class App {
 	}
 	static void errorBeep(Toolkit toolkit) {
 		Runnable runWinErrorSnd = (Runnable) toolkit.getDesktopProperty("win.sound.exclamation");
-		if (runWinErrorSnd!=null) runWinErrorSnd.run();
+		if (runWinErrorSnd != null) runWinErrorSnd.run();
 	}
 	public static void setApp(String[] args, String ver, TranslatedText tt) {
 		try {
@@ -122,7 +122,7 @@ public class App {
 			final Log[] log = new Log[1];
 			final RandomAccessFile[] currIso = new RandomAccessFile[1];
 			//look, it was either this, or passing the text array from Main as a param
-			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 88, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 83, 86, 89, 33};
+			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 88, 92, 22}, patchTypeIdx = {53, 59, 65, 74, 77, 83, 86, 89, 91, 33};
 			text = tt.getText();
 			String[] langs = tt.getLangs();
 			String[] links = {
@@ -133,8 +133,8 @@ public class App {
 			System.arraycopy(text, 15, patchDesc, 0, 7);
 			System.arraycopy(text, 26, patchTypes, 0, 7);
 			for (int i = 7; i < 7 + patchTypeIdx.length; i++) {
-				patchDesc[i] = text[patchDescIdx[i-7]];
-				patchTypes[i] = text[patchTypeIdx[i-7]];
+				patchDesc[i] = text[patchDescIdx[i - 7]];
+				patchTypes[i] = text[patchTypeIdx[i - 7]];
 			}
 			String title = text[0] + " " + ver;
 			Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -179,7 +179,7 @@ public class App {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						RandomAccessFile iso = getIsoFromChooser(chooser, toolkit);
+						RandomAccessFile iso = getIsoFromChooser(chooser, frame, toolkit);
 						if (iso != null) 
 							frame.setTitle(title + " - " + chooser.getSelectedFile().getName());
 						else frame.setTitle(title);
@@ -238,6 +238,7 @@ public class App {
 						descLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 						userLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 						if (i != links.length) {
+							userLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 							userLabel.setForeground(new Color(0x74, 0x31, 0xdd));
 							userLabel.addMouseListener(new MouseAdapter() {
 								@Override
@@ -306,7 +307,7 @@ public class App {
 			patchBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 82, 85, 88, 22};
+					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 82, 85, 88, 92, 22};
 					currPatchBoxIdx[0] = patchBox.getSelectedIndex();
 					int index = indexArray[currPatchBoxIdx[0]];
 					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>")

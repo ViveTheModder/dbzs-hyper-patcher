@@ -10,7 +10,7 @@ The repository has been **unarchived** and **will remain this way**. Therefore, 
 # List of Patches
 | Patch | Argument | Description | Release |
 | ------ | ------ | ------ | ------ |
-| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), Great Ape detransformation crash (by disabling it for all costumes), Raditz crash (from his 1st damaged costume; only happens on console), and Goku Spirit Bomb crash (only against Meta-Cooler). | 26 Sep. - 28 Sep., 9 Oct., 23 Oct.
+| Fix Game Crashes | fix-crash | Fixes Dragon History crash (which prevented "The World's Strongest" from being completed), Sim Dragon crash (which would occur shortly after selecting a character), Great Ape detransformation crash (by disabling it for all costumes), Raditz crash (from his 1st damaged costume; only happens on console), and Goku Spirit Bomb crash (only against Meta-Cooler). | 26 Sep. - 28 Sep., 9 Oct., 23 Oct., 20 May '26, 23 May. '26
 | Fix Story Mode Typos | -fix-typos | Fixes Dragon History subtitle errors (such as misspellings and incomplete sentences). | 26 Sep.
 | Fix Vegeta Victory Quote | -fix-vegeta | Disables Super Saiyan 2 Vegeta's wrongly assigned victory quote against Super Android #13. | 26 Sep.
 | Fix Pikkon Permanent Halo | -fix-pikkon | Disables Pikkon's halo by default for his 2nd costume, as is the case for his 1st costume. | 28 Sep.
@@ -22,7 +22,11 @@ The repository has been **unarchived** and **will remain this way**. Therefore, 
 | Fix Majin Buu Blaster Wave | -fix-buu | Replaces Majin Buu's incorrect Kiai Cannon with the intended Blaster Wave. | 22 Oct.
 | Unlock All Songs | -fix-bgmlock | Unlocks all the songs in BGM Select without the need of altered savedata. | 28 Oct.
 | Fix Cell Animation in Story Mode | -fix-cell | Restores Cell - Imperfect's Kamehameha animation in Dragon History. | 28 Oct.
-| Fix All | -fix-all | Applies all the patches listed above. | 26 Sep. - 22 Oct.
+| Fix Cell Games Begin Scenario | -fix-story | After Goku's clash with Cell in the scenario, he will fire his Super Energy Wave Volley instead of his Meteor Smash. | 20 May '26
+| Fix Skill Lists | -fix-skills | Fixes the costs for Majuub's Brutal Buster and Meta-Cooler's Lock-On Buster. | 20 May '26
+| Restore Costume Repair | -fix-absorb | Re-enables the transformation bonus that repairs Super Buu, Super Buu - Gotenks Absorbed and Super Android #17's costumes. | 23 May '26
+| Fix Shaders After Detransformation | -fix-shader | Edits the game's code to disable static shaders after a detransformation. | 4 Nov. '26
+| Fix All | -fix-all | Applies all the patches listed above. | 26 Sep. - 4 Nov. '26
 
 # How to Use
 ## Command-line
