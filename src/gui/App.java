@@ -91,7 +91,7 @@ public class App {
 	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
 	JMenu[] menus, String[] langs, String abbr, String ver, TranslatedText tt, int selIndex) 
 	throws IOException {
-		String[] patchTypes = new String[16];
+		String[] patchTypes = new String[17];
 		String[] translatedLangs = tt.getLangs(abbr);
 		System.arraycopy(text, 26, patchTypes, 0, 7);
 		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 89, 91, 33};

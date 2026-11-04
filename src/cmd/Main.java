@@ -35,7 +35,7 @@ public class Main {
 			int[] patchDescIdx = {54, 58, 64, 73, 76, 82, 85, 88, 92, 22};
 			//common variables
 			Locale loc = Locale.getDefault(Locale.Category.FORMAT);
-			String lang = loc.getLanguage(), version = "v2.5";
+			String lang = loc.getLanguage(), version = "v2.5.1";
 			String[] patchArgs = {
 				"-fix-crash", "-fix-typos", "-fix-vegeta", "-fix-pikkon",
 				"-fix-goku", "-fix-buutenks", "-fix-krillin", "-fix-sim", 

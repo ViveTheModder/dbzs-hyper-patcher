@@ -99,5 +99,5 @@ EXTRA:
 "Risolvi Riparazione di Costumi"
 "Battaglia Suprema decisiva è "
 "Risolvi Ombre Dopo Detrasformazioni"
-"Cambia il codige di gioco per disattivare le ombre statische dopo le detransformazioni."
-"Il codige di gioco è "
+"Cambia il codice di gioco per disattivare le ombre statische dopo le detransformazioni."
+"Il codice di gioco è "
