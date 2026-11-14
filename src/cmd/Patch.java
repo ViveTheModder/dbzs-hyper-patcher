@@ -205,11 +205,10 @@ public class Patch {
 		}
 		if (patchBools[10]) {
 			byte[] asmInstrFooter = {0, 16}; //convert bnel to unconditional branch
-			byte[] elfFooter = {12, -28, 13, 38};
 			iso.seek(2076122);
 			iso.write(asmInstrFooter);
 			iso.seek(2746468); //last 4 bytes of the ELF (editing them will fix the CRC)
-			iso.write(elfFooter);
+			setElfFooter(iso);
 			result = text[48] + text[72];
 			Main.displayResult(result, ta, print);
 		}
@@ -262,6 +261,7 @@ public class Patch {
 			iso.seek(1492672);
 			iso.write(asmInstrBytes);
 			iso.write(nopBytes);
+			setElfFooter(iso);
 			result = text[48] + text[93] + text[50];
 			Main.displayResult(result, ta, print);
 		}
@@ -276,10 +276,48 @@ public class Patch {
 			return false;
 		}
 	}
-	private static void writePatchFile(RandomAccessFile iso, int pos, int fileSize, String fileName)
-	throws IOException {
+	public static byte[] getValBytes(int val) {
+		byte[] valBytes = new byte[4];
+		int numBits = 0;
+		for (int i = 0; i < 4; i++) {
+			/* Literally the steps taken in the getVal() method, but the inverse:
+			 * shift right by 8 bits (1 byte) 4 times to get the bytes from left to right. */
+			valBytes[i] = (byte) (val >> numBits);
+			numBits += 8;
+		}
+		return valBytes;
+	}
+	private static int getVal(byte[] intBytes) {
+		int numBits = 24, output = 0;
+		for (int i = 0; i < 4; i++) {
+			/* Steps taken:
+			 * 1. Bitwise AND the current byte with 0xFF to make it unsigned
+			 * 2. Because the byte is now 32 bits (0xFF is an int), shift left
+			 * to set the position in the output for the byte's bits (24-31, 16-23, 8-15, 1-7) 
+			 * 3. Bitwise OR the bits to add them to the output */
+			output |= ((intBytes[i] & 0xFF) << numBits);
+			numBits -= 8; //8 bits = 1 byte
+		}
+		return output & 0xFFFFFFFF;
+	}
+	private static void setElfFooter(RandomAccessFile iso) throws IOException {
+		int crc = 0, size = 2115688, start = 630784;
+		byte[] bytes = new byte[size], input = new byte[4];
+		iso.seek(start + size - 4);
+		iso.write(input);
+		iso.seek(start);
+		iso.readFully(bytes);
+		for (int pos = size - 4; pos >= 0; pos -= 4) {
+			System.arraycopy(bytes, pos, input, 0, input.length);
+			crc ^= getVal(input);
+		}
+		int xor = crc ^ 0xC2138142;
+		iso.seek(start + size - 4);
+		iso.writeInt(xor);
+	}
+	private static void writePatchFile(RandomAccessFile iso, int pos, int fileSize, String fileName) throws IOException {
 		byte[] pakBytes = new byte[fileSize];
-		InputStream stream = Main.class.getResourceAsStream("/patch/"+fileName);
+		InputStream stream = Main.class.getResourceAsStream("/patch/" + fileName);
 		DataInputStream pakStream = new DataInputStream(stream);
 		pakStream.readFully(pakBytes);
 		pakStream.close();

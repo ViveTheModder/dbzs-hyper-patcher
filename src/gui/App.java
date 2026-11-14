@@ -12,6 +12,8 @@ import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -22,6 +24,7 @@ import java.io.RandomAccessFile;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -36,6 +39,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -56,23 +60,26 @@ public class App {
 			return false;
 		}
 	}
-	private static RandomAccessFile getIsoFromChooser(JFileChooser chooser, JFrame frame, Toolkit tk)
-	throws IOException {
-		RandomAccessFile iso = null;
+	private static JFileChooser getChooser() {
+		JFileChooser fc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23] + " (*.ISO)", "iso");
-		chooser.addChoosableFileFilter(filter);
-		chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		chooser.setFileFilter(filter);
-		chooser.setDialogTitle(text[24]);
+		fc.addChoosableFileFilter(filter);
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setFileFilter(filter);
+		fc.setDialogTitle(text[24]);
+		return fc;
+	}
+	private static RandomAccessFile getIso(File f, JFileChooser fc, JFrame frame, Toolkit tk) throws IOException {
+		RandomAccessFile iso = null;
 		while (iso == null) {
-			int result = chooser.showOpenDialog(frame);
+			boolean chooserEnabled = fc != null;
+			int result = chooserEnabled ? fc.showOpenDialog(frame) : JFileChooser.APPROVE_OPTION;
 			if (result == JFileChooser.APPROVE_OPTION) {
-				File currFile = chooser.getSelectedFile();
+				File currFile = chooserEnabled ? fc.getSelectedFile() : f;
 				if (!currFile.renameTo(currFile)) {
 					errorBeep(tk);
-					JOptionPane.showMessageDialog(chooser, text[80], text[49].replace(": ", ""), 
-					JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(fc, text[80], text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 				//RAF will throw an exception if file is used by another process
@@ -80,34 +87,41 @@ public class App {
 				if (!Main.isHyperIso(iso)) {
 					iso = null;
 					errorBeep(tk);
-					JOptionPane.showMessageDialog(chooser, text[25], text[49].replace(": ", ""), 
-					JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(fc, text[25], text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			else if (result == JFileChooser.CANCEL_OPTION) break;
 		}
 		return iso;
 	}
-	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JLabel pl, 
-	JMenu[] menus, String[] langs, String abbr, String ver, TranslatedText tt, int selIndex) 
+	private static void changeLanguage(JComboBox<String> cb, JButton pb, JFrame f, JFileChooser fc, 
+	JLabel pl, JMenu[] menus, String[] langs, String abbr, String ver, TranslatedText tt, int selIndex) 
 	throws IOException {
 		String[] patchTypes = new String[17];
 		String[] translatedLangs = tt.getLangs(abbr);
 		System.arraycopy(text, 26, patchTypes, 0, 7);
-		int[] patchIdx = {53, 59, 65, 74, 77, 83, 86, 89, 91, 33};
+		int[] patchIdx = { 53, 59, 65, 74, 77, 83, 86, 89, 91, 33 };
 		for (int i = 7; i < patchTypes.length; i++) patchTypes[i] = text[patchIdx[i-7]];
 		cb.setModel(new DefaultComboBoxModel<String>(patchTypes));
 		cb.setSelectedIndex(selIndex); //preserve currently selected index
 		pb.setText(text[34]);
 		pb.setToolTipText(text[45]);
 		pl.setText(text[35]);
-		int[] menuIdx = {67, 52, 62}, helpItemIdx = {37, 61, 36};
+		int[] menuIdx = { 67, 52, 62 }, helpItemIdx = { 37, 61, 36 };
 		menus[0].getItem(0).setText(text[68]);
 		for (int i = 0; i < menus.length; i++) menus[i].setText(text[menuIdx[i]]);
 		for (int i = 0; i < 3; i++)	menus[2].getItem(i).setText(text[helpItemIdx[i]]);
 		for (int i = 0; i < TranslatedText.NUM_LANGS; i++)
 			menus[1].getItem(i).setText(translatedLangs[i]);
-		f.setTitle(text[0]+" "+ver);
+		f.setTitle(text[0] + " " + ver);
+		//reconstruct chooser text
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(text[23] + " (*.ISO)", "iso");
+		fc.resetChoosableFileFilters();
+		fc.addChoosableFileFilter(filter);
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setFileFilter(filter);
+		fc.setDialogTitle(text[24]);
 	}
 	static void errorBeep(Toolkit toolkit) {
 		Runnable runWinErrorSnd = (Runnable) toolkit.getDesktopProperty("win.sound.exclamation");
@@ -126,8 +140,8 @@ public class App {
 			text = tt.getText();
 			String[] langs = tt.getLangs();
 			String[] links = {
-				"https://github.com/ViveTheModder/dbzs-hyper-patcher/releases",
-				"https://dbzs-hyper.nekoweb.org"};
+				"https://github.com/ViveTheModder/dbzs-hyper-patcher/releases", "https://dbzs-hyper.nekoweb.org"
+			};
 			String[] patchDesc = new String[args.length];
 			String[] patchTypes = new String[args.length];
 			System.arraycopy(text, 15, patchDesc, 0, 7);
@@ -149,7 +163,7 @@ public class App {
 			JComboBox<String> patchBox = new JComboBox<String>(patchTypes);
 			JButton patch = new JButton(text[34]);
 			JFrame frame = new JFrame();
-			JFileChooser chooser = new JFileChooser();
+			JFileChooser chooser = getChooser();
 			JLabel iconLabel = new JLabel(""), patchLbl = new JLabel(text[35]);
 			JMenu[] menus = {
 				new JMenu(text[67]), new JMenu(text[52]), new JMenu(text[62])
@@ -174,19 +188,47 @@ public class App {
 				new JMenuItem(text[37]), new JMenuItem(text[61]), new JMenuItem(text[36])
 			};
 			for (int i = 0; i < langs.length; i++) langItems[i] = new JMenuItem(langs[i]);
+			iconLabel.setTransferHandler(new TransferHandler() {
+				@Override
+				public boolean canImport(TransferHandler.TransferSupport ts) {
+					return ts.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+				}
+				@Override
+				@SuppressWarnings("unchecked")
+				public boolean importData(TransferHandler.TransferSupport ts) {
+					if (!canImport(ts)) return false;
+					try {
+						List<File> files = (List<File>) ts.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+						File dir = files.get(0);
+						if (dir.isFile()) {
+							RandomAccessFile iso = getIso(dir, null, frame, toolkit);
+							if (iso != null) frame.setTitle(text[0] + " - " + dir.getName());
+							else frame.setTitle(text[0] + " " + ver);
+							currIso[0] = iso;
+							log[0] = null;
+							res[0] = false;
+						}
+					}
+					catch (Exception e) {
+						return false;
+					}
+					return true;
+				}
+			});
 			//give menu items their own listeners
 			fileItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						RandomAccessFile iso = getIsoFromChooser(chooser, frame, toolkit);
-						if (iso != null) 
-							frame.setTitle(title + " - " + chooser.getSelectedFile().getName());
-						else frame.setTitle(title);
+						RandomAccessFile iso = getIso(null, chooser, frame, toolkit);
+						if (iso != null) frame.setTitle(text[0] + " - " + chooser.getSelectedFile().getName());
+						else frame.setTitle(text[0] + " " + ver);
 						currIso[0] = iso;
 						log[0] = null;
 						res[0] = false;
-					} catch (IOException ex) {ex.printStackTrace();} 
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					} 
 				}
 			});
 			for (int i = 0; i < 2; i++) {
@@ -201,10 +243,12 @@ public class App {
 							if (isInternetAvailable(uri)) Desktop.getDesktop().browse(uri);
 							else {
 								errorBeep(toolkit);
-								JOptionPane.showMessageDialog(null, text[textIdx], text[71], 
-								JOptionPane.WARNING_MESSAGE);
+								JOptionPane.showMessageDialog(null, text[textIdx], text[71], JOptionPane.WARNING_MESSAGE);
+								toolkit.getSystemClipboard().setContents(new StringSelection(uri.toString()), null);
 							}
-						} catch (Exception e1) {e1.printStackTrace();}
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
 					}
 				});
 			}
@@ -245,14 +289,14 @@ public class App {
 								public void mouseClicked(MouseEvent e) {
 									try {
 										URI uri = new URI(links[index]);
-										if (isInternetAvailable(uri)) 
-											Desktop.getDesktop().browse(uri);
+										if (isInternetAvailable(uri)) Desktop.getDesktop().browse(uri);
 										else {
 											errorBeep(toolkit);
-											JOptionPane.showMessageDialog(null, text[43], text[71], 
-											JOptionPane.WARNING_MESSAGE);
+											JOptionPane.showMessageDialog(null, text[43], text[71], JOptionPane.WARNING_MESSAGE);
 										}
-									} catch (Exception e1) {e1.printStackTrace();}
+									} catch (Exception e1) {
+										e1.printStackTrace();
+									}
 								}
 							});
 						}
@@ -278,8 +322,10 @@ public class App {
 							TranslatedText ttNew = new TranslatedText(abbrs[index]);
 							String[] newText = ttNew.getText();
 							text = newText;
-							changeLanguage(patchBox, patch, frame, patchLbl, menus, langs, abbrs[index], ver, ttNew, currPatchBoxIdx[0]);
-						} catch (IOException ex) {ex.printStackTrace();}
+							changeLanguage(patchBox, patch, frame, chooser, patchLbl, menus, langs, abbrs[index], ver, ttNew, currPatchBoxIdx[0]);
+						} catch (IOException ex) {
+							ex.printStackTrace();
+						}
 					}
 				});
 			}
@@ -310,8 +356,7 @@ public class App {
 					int[] indexArray = {15, 16, 17, 18, 19, 20, 21, 54, 58, 64, 73, 76, 82, 85, 88, 92, 22};
 					currPatchBoxIdx[0] = patchBox.getSelectedIndex();
 					int index = indexArray[currPatchBoxIdx[0]];
-					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>")
-					+"</html>");
+					patchBox.setToolTipText("<html>" + text[index].replaceAll("\n", "<br>") + "</html>");
 				}
 			});
 			//give button its action listener
@@ -323,19 +368,16 @@ public class App {
 						int idx = patchBox.getSelectedIndex();
 						if (res[0]) {
 							errorBeep(toolkit);
-							JOptionPane.showMessageDialog(null, text[70], 
-							text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, text[70], text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 						}
 						else {
-							if (log[0] == null) 
-								log[0] = new Log(frame, img, currIso, title, args, toolkit, idx, res);
+							if (log[0] == null) log[0] = new Log(frame, img, currIso, title, args, toolkit, idx, res);
 							else log[0].setBgWorker(currIso, title, args, toolkit, idx, res);	
 						}
 					}
 					else {
 						errorBeep(toolkit);
-						JOptionPane.showMessageDialog(null, text[69], 
-						text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, text[69], text[49].replace(": ", ""), JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			});
@@ -346,12 +388,12 @@ public class App {
 				menus[2].add(helpItems[i]);
 			}
 			for (int i = 0; i < langs.length; i++) menus[1].add(langItems[i]);
-			panel.add(iconLabel,gbc);
-			panel.add(patchLbl,gbc);
-			panel.add(new JLabel(" "),gbc);
-			panel.add(patchBox,gbc);
-			panel.add(new JLabel(" "),gbc);
-			panel.add(new JLabel(" "),gbc);
+			panel.add(iconLabel, gbc);
+			panel.add(patchLbl, gbc);
+			panel.add(new JLabel(" "), gbc);
+			panel.add(patchBox, gbc);
+			panel.add(new JLabel(" "), gbc);
+			panel.add(new JLabel(" "), gbc);
 			panel.add(patch,gbc);
 			frame.add(panel);
 			//set frame properties
@@ -365,6 +407,8 @@ public class App {
 			frame.setVisible(true);
 		} catch (HeadlessException e) {
 			System.out.println(text[49] + text[47].replace("[os]", System.getProperty("os.name")));
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
